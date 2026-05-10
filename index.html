@@ -1,114 +1,257 @@
 <!doctype html>
 <html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>admira.shop - Robot as a Service</title>
-  <meta name="description" content="Admira.shop: alquiler y venta de robots Unitree y AgiBot con operacion, integracion y soporte desde Barcelona.">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="shell">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <div class="traffic" aria-label="Ventana">
-          <span class="dot red"></span>
-          <span class="dot yellow"></span>
-          <span class="dot green"></span>
-        </div>
-        <div class="path">user@admiranext ~ <strong>/admira-shop</strong></div>
-        <nav class="nav" aria-label="Principal">
-          <a href="0.html">0</a>
-          <a class="active" href="index.html">Home</a>
-          <a href="alquiler.html">Alquiler</a>
-          <a href="venta.html">Venta</a>
-          <a href="catalogo.html">Catalogo</a>
-          <a class="button primary" href="contacto.html">Contacto</a>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admira.shop | Venta y alquiler de robots Agibot en España</title>
+    <meta
+      name="description"
+      content="Venta, alquiler y activación de robots Agibot con Admira.shop para eventos, retail, educación, inspección y empresas en España."
+    >
+    <link rel="stylesheet" href="home-agibot.css">
+  </head>
+  <body>
+    <div class="admira-wallpaper" aria-hidden="true">
+      <img src="https://www.admiranext.com/assets/robots.jpg" alt="">
+      <video muted loop autoplay playsinline preload="auto" poster="https://www.admiranext.com/assets/robots.jpg">
+        <source src="https://www.admiranext.com/assets/fondoAdmiraNext.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="#inicio" aria-label="Admira.Shop v.2026.05.09.R1">
+        <span>Admira.Shop</span>
+        <small>v.2026.05.09.R1</small>
+      </a>
+      <div class="topbar-actions">
+        <nav class="nav" aria-label="Principal" data-i18n-attr="aria-label:navLabel">
+          <a href="#robots" data-i18n="navRobots">Robots</a>
+          <a href="#planes" data-i18n="navPlans">Compra / alquiler</a>
+          <a href="#proceso" data-i18n="navProcess">Proceso</a>
+          <a href="#contacto" data-i18n="navContact">Contacto</a>
         </nav>
+        <a class="header-cta" href="#contacto" data-i18n="headerCta">Consultar</a>
+        <button class="language-toggle" type="button" aria-label="Switch to English">ENG</button>
       </div>
     </header>
 
-    <main class="boot-screen">
-      <section class="terminal">
-        <div class="terminal-head">
-          <span>ADMIRA.SHOP v.2026.05.09.r1</span>
-          <small>Robot as a Service</small>
-        </div>
-        <div class="terminal-body">
-          <div class="brand-mark">
-            <span class="brand-disc" aria-hidden="true"></span>
-            <span class="brand-word">ADMIRA</span>
+    <main>
+      <section class="hero" id="inicio">
+        <div class="hero-media" aria-hidden="true">
+          <div class="bay-light"></div>
+          <div class="robot-display robot-display-main">
+            <span class="antenna"></span>
+            <span class="head"><i></i><i></i></span>
+            <span class="torso"></span>
+            <span class="screen"></span>
+            <span class="base"></span>
           </div>
-          <p class="subline">Robot Development Store<br>v.2026.05.09.r1</p>
-          <div class="loader" aria-hidden="true"><span></span></div>
-          <div class="hero-grid">
-            <div>
-              <p><span class="prompt">&gt;</span> <span class="cmd">boot admira.shop --mode robots</span> <span class="ok">ok</span></p>
-              <h1>Robots Unitree y AgiBot para alquilar, comprar y desplegar.</h1>
-              <p class="lede">Un sitio separado por rutas, igual que una terminal bien ordenada: alquiler para activaciones rapidas, venta para implantaciones reales, catalogo para decidir modelo y contacto para cerrar el siguiente paso.</p>
-              <div class="page-actions">
-                <a class="button primary" href="alquiler.html">/alquiler</a>
-                <a class="button green" href="venta.html">/venta</a>
-                <a class="button" href="catalogo.html">/catalogo</a>
-              </div>
+          <div class="robot-display robot-display-side">
+            <span class="antenna"></span>
+            <span class="head"><i></i><i></i></span>
+            <span class="torso"></span>
+            <span class="screen"></span>
+            <span class="base"></span>
+          </div>
+          <div class="floor-lines"></div>
+        </div>
+
+        <div class="hero-content">
+          <p class="eyebrow" data-i18n="heroEyebrow">Robots Agibot en España</p>
+          <h1 data-i18n="heroTitle">Compra o alquila robots Agibot para activar tu marca.</h1>
+          <p data-i18n="heroText">
+            En AdmiraNext creamos experiencias innovadoras combinando creatividad y tecnología.
+            Admira.shop conecta la venta, el alquiler y la puesta en escena de robots Agibot
+            para eventos, retail, educación, inspección y empresas.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#contacto" data-i18n="heroPrimary">Pedir propuesta</a>
+            <a class="button secondary" href="#robots" data-i18n="heroSecondary">Ver Agibot</a>
+          </div>
+        </div>
+
+        <aside class="availability-panel" aria-label="Resumen de servicio" data-i18n-attr="aria-label:availabilityLabel">
+          <div>
+            <strong data-i18n="availabilityDeliveryTitle">Venta + RaaS</strong>
+            <span data-i18n="availabilityDeliveryText">Compra directa o alquiler flexible</span>
+          </div>
+          <div>
+            <strong data-i18n="availabilityOperatorTitle">Soporte local</strong>
+            <span data-i18n="availabilityOperatorText">Briefing, entrega, operador y puesta en marcha</span>
+          </div>
+          <div>
+            <strong data-i18n="availabilityBrandingTitle">Experiencia a medida</strong>
+            <span data-i18n="availabilityBrandingText">Guiones, demo, pantallas y flujos de marca</span>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section strip">
+        <div class="metric">
+          <strong data-i18n="metricEventsTitle">Alquiler</strong>
+          <span data-i18n="metricEventsText">Desde demos de un día hasta campañas itinerantes.</span>
+        </div>
+        <div class="metric">
+          <strong data-i18n="metricRetailTitle">Venta</strong>
+          <span data-i18n="metricRetailText">Compra de unidades Agibot con acompañamiento de implantación.</span>
+        </div>
+        <div class="metric">
+          <strong data-i18n="metricCompanyTitle">Integración</strong>
+          <span data-i18n="metricCompanyText">Contenidos, guiones, formación y soporte para equipos.</span>
+        </div>
+      </section>
+
+      <section class="section" id="robots">
+        <div class="section-heading">
+          <p class="eyebrow" data-i18n="catalogEyebrow">Catálogo Agibot</p>
+          <h2 data-i18n="catalogTitle">Elige el formato Agibot según el uso: evento, operación o laboratorio.</h2>
+        </div>
+        <div class="robot-grid">
+          <article class="robot-card">
+            <div class="robot-asset host" aria-hidden="true"></div>
+            <div class="card-copy">
+              <h3 data-i18n="hostTitle">Agibot A2 / X2 humanoide</h3>
+              <p data-i18n="hostText">Para recepción, guía de visitantes, showroom, entretenimiento, educación y demostraciones de IA embodied.</p>
+              <ul>
+                <li data-i18n="hostItem1">Interacción multimodal y presencia escénica</li>
+                <li data-i18n="hostItem2">Compra o alquiler para eventos</li>
+                <li data-i18n="hostItem3">Ideal para ferias, retail y educación</li>
+              </ul>
             </div>
-<pre class="robot-ascii">        .-=========-.
-     .-'  ADMIRA CRT '-.
-    /  _______________  \
-   |  |  UNITREE +    |  |
-   |  |  AGIBOT       |  |
-   |  |   _      _    |  |
-   |  | _/o\____/o\_  |  |
-   |  ||___|____|___| |  |
-    \ |_______________| /
-     '.___ROBOT.OS___.'
-          /_/     \_\
+          </article>
 
-Barcelona, Spain</pre>
+          <article class="robot-card">
+            <div class="robot-asset waiter" aria-hidden="true"></div>
+            <div class="card-copy">
+              <h3 data-i18n="waiterTitle">Agibot D1 cuadrúpedo</h3>
+              <p data-i18n="waiterText">Robot ágil para demostraciones, educación, patrulla ligera, inspección visual y acciones de alto impacto.</p>
+              <ul>
+                <li data-i18n="waiterItem1">Formato demostración o desarrollo</li>
+                <li data-i18n="waiterItem2">Control remoto y rutas supervisadas</li>
+                <li data-i18n="waiterItem3">Perfecto para campus, stands y seguridad</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="robot-card">
+            <div class="robot-asset show" aria-hidden="true"></div>
+            <div class="card-copy">
+              <h3 data-i18n="showTitle">Agibot C5 / soluciones</h3>
+              <p data-i18n="showText">Soluciones comerciales para limpieza, operaciones y pilotos de automatización con acompañamiento técnico.</p>
+              <ul>
+                <li data-i18n="showItem1">Pilotos para centros comerciales y empresas</li>
+                <li data-i18n="showItem2">Configuración según escenario</li>
+                <li data-i18n="showItem3">Escalable a compra, renting o servicio</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section plans" id="planes">
+        <div class="section-heading">
+          <p class="eyebrow" data-i18n="plansEyebrow">Compra y alquiler</p>
+          <h2 data-i18n="plansTitle">Conecta con Agibot desde una demo rápida hasta una implantación completa.</h2>
+        </div>
+        <div class="plan-grid">
+          <article class="plan">
+            <span data-i18n="demoTime">1 jornada</span>
+            <h3 data-i18n="demoTitle">Alquiler evento</h3>
+            <p data-i18n="demoText">Robot Agibot para ferias, presentaciones, visitas VIP o pruebas de concepto internas.</p>
+            <strong data-i18n="demoPrice">Desde 899 EUR</strong>
+          </article>
+          <article class="plan featured">
+            <span data-i18n="eventTime">Compra directa</span>
+            <h3 data-i18n="eventTitle">Venta Agibot</h3>
+            <p data-i18n="eventText">Selección de modelo, pedido, logística, formación y arranque operativo con soporte Admira.</p>
+            <strong data-i18n="eventPrice">A consultar</strong>
+          </article>
+          <article class="plan">
+            <span data-i18n="campaignTime">Varios días / meses</span>
+            <h3 data-i18n="campaignTitle">RaaS / renting</h3>
+            <p data-i18n="campaignText">Modelo flexible para campañas, centros comerciales, educación, demos recurrentes o validación operativa.</p>
+            <strong data-i18n="campaignPrice">A medida</strong>
+          </article>
+        </div>
+        <p class="source-note" data-i18n="plansNote">Agibot anunció alquiler flexible desde 899 EUR/día y tienda global oficial. Admira.shop actúa como punto de conexión, activación y soporte para España.</p>
+      </section>
+
+      <section class="section process" id="proceso">
+        <div class="section-heading">
+          <p class="eyebrow" data-i18n="processEyebrow">Cómo trabajamos</p>
+          <h2 data-i18n="processTitle">Nos ocupamos del encaje comercial y técnico para que Agibot funcione como parte de tu marca.</h2>
+        </div>
+        <div class="steps">
+          <div>
+            <span>01</span>
+            <h3 data-i18n="briefTitle">Caso de uso</h3>
+            <p data-i18n="briefText">Definimos objetivo, espacio, público, horarios, presupuesto y si conviene comprar, alquilar o hacer piloto.</p>
+          </div>
+          <div>
+            <span>02</span>
+            <h3 data-i18n="setupTitle">Conexión Agibot</h3>
+            <p data-i18n="setupText">Validamos modelo, disponibilidad, accesorios, logística, requisitos técnicos y soporte local.</p>
+          </div>
+          <div>
+            <span>03</span>
+            <h3 data-i18n="activationTitle">Entrega y activación</h3>
+            <p data-i18n="activationText">Instalamos, formamos, operamos si hace falta y ajustamos la experiencia durante el servicio.</p>
           </div>
         </div>
       </section>
 
-      <section class="section">
-        <h2>Manifesto</h2>
-        <div class="terminal">
-          <div class="terminal-body">
-            <ul class="list">
-              <li><b>Who</b><span>An Everything as a Service company.</span></li>
-              <li><b>What</b><span>Physical AI projects with real robots.</span></li>
-              <li><b>How</b><span>Proprietary IoT platform, operators, integracion y soporte.</span></li>
-              <li><b>Why</b><span>Because robots should leave the demo table and enter the world.</span></li>
-            </ul>
-          </div>
+      <section class="section contact" id="contacto">
+        <div class="contact-copy">
+          <p class="eyebrow" data-i18n="contactEyebrow">Conectar Agibot</p>
+          <h2 data-i18n="contactTitle">Cuéntanos si quieres comprar, alquilar o probar un robot Agibot.</h2>
+          <p data-i18n="contactText">
+            Indica ciudad, fecha, modelo o uso previsto, duración y objetivo. Te responderemos con
+            recomendación, disponibilidad y siguiente paso con Agibot.
+          </p>
         </div>
-      </section>
-
-      <section class="section">
-        <h2>Navigation</h2>
-        <div class="grid four">
-          <a class="tile" href="alquiler.html">
-            <strong>/alquiler</strong>
-            <p>Eventos, rodajes, retail y demos con operador incluido.</p>
-          </a>
-          <a class="tile" href="venta.html">
-            <strong>/venta</strong>
-            <p>Compra asistida, puesta en marcha y soporte local.</p>
-          </a>
-          <a class="tile" href="catalogo.html">
-            <strong>/catalogo</strong>
-            <p>Go2, B2, G1, H1, X1, A2 y configuraciones bajo peticion.</p>
-          </a>
-          <a class="tile" href="contacto.html">
-            <strong>/contacto</strong>
-            <p>Cuéntanos fechas, uso, ubicacion y presupuesto objetivo.</p>
-          </a>
-        </div>
+        <form class="contact-form" action="mailto:hola@admiranext.com" method="post" enctype="text/plain">
+          <label>
+            <span data-i18n="formName">Nombre</span>
+            <input name="nombre" autocomplete="name" required>
+          </label>
+          <label>
+            <span data-i18n="formEmail">Email</span>
+            <input type="email" name="email" autocomplete="email" required>
+          </label>
+          <label>
+            <span data-i18n="formDateCity">Fecha y ciudad</span>
+            <input name="fecha-ciudad" placeholder="Ej. Madrid, 18 de junio" data-i18n-attr="placeholder:formDateCityPlaceholder" required>
+          </label>
+          <label>
+            <span data-i18n="formRobot">Qué necesitas</span>
+            <select name="robot">
+              <option data-i18n="formRobotHost">Comprar Agibot humanoide</option>
+              <option data-i18n="formRobotWaiter">Alquilar Agibot para evento</option>
+              <option data-i18n="formRobotShow">Piloto / RaaS empresarial</option>
+              <option data-i18n="formRobotD1">Robot cuadrúpedo D1</option>
+              <option data-i18n="formRobotUnsure">No lo tengo claro</option>
+            </select>
+          </label>
+          <label class="wide">
+            <span data-i18n="formMessage">Mensaje</span>
+            <textarea name="mensaje" rows="5" placeholder="Objetivo, modelo Agibot si lo conoces, duración, espacio y presupuesto orientativo" data-i18n-attr="placeholder:formMessagePlaceholder"></textarea>
+          </label>
+          <button class="button primary wide" type="submit" data-i18n="formSubmit">Conectar con Agibot</button>
+        </form>
       </section>
     </main>
 
-    <footer>
-      admira.shop — un servicio de <a href="https://www.admiranext.com">AdmiraNext</a> · info@admira.com · Barcelona
+    <footer class="footer">
+      <span>AdmiraNext · admira.shop</span>
+      <div class="footer-links">
+        <a href="https://store.agibot.com" target="_blank" rel="noreferrer">store.agibot.com</a>
+        <a href="mailto:hola@admiranext.com">hola@admiranext.com</a>
+      </div>
     </footer>
-  </div>
-</body>
+
+    </div>
+
+    <script src="home-agibot.js"></script>
+  </body>
 </html>

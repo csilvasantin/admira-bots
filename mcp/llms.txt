@@ -5,9 +5,9 @@
 > catálogo y los formatos, y salte al resto de la trilogía — y viceversa. Sitio
 > estático; la API operativa viva vive en el Consejo (admira.live) y se federa aquí.
 
-Sitio: https://www.admira.shop
-Hub MCP: https://www.admira.shop/mcp/
-Manifest máquina: https://www.admira.shop/mcp/manifest.json
+Sitio: https://admira.shop
+Hub MCP: https://admira.shop/mcp/
+Manifest máquina: https://admira.shop/mcp/manifest.json
 Versión: v.26.06.19.r1
 Repo: https://github.com/csilvasantin/admira-bots
 
@@ -19,17 +19,17 @@ completa, con encaje comercial y técnico.
 
 ## Superficie pública (sitio estático)
 
-- Home: https://www.admira.shop/
-- Venta: https://www.admira.shop/venta.html
-- Alquiler: https://www.admira.shop/alquiler.html
-- Catálogo: https://www.admira.shop/catalogo.html
-- Contacto: https://www.admira.shop/contacto.html
-- Fichas Agibot: https://www.admira.shop/agibot/ (A2 Lite, A2 Ultra, A2-W, D1 Family, D1 Ultra, G1, G2, especialidades).
-- Unitree: https://www.admira.shop/unitree/
+- Home: https://admira.shop/
+- Venta: https://admira.shop/venta.html
+- Alquiler: https://admira.shop/alquiler.html
+- Catálogo: https://admira.shop/catalogo.html
+- Contacto: https://admira.shop/contacto.html
+- Fichas Agibot: https://admira.shop/agibot/ (A2 Lite, A2 Ultra, A2-W, D1 Family, D1 Ultra, G1, G2, especialidades).
+- Unitree: https://admira.shop/unitree/
 
 ## Documentación
 
-- Publicación: https://www.admira.shop/PUBLISHING.md
+- Publicación: https://admira.shop/PUBLISHING.md
 - HANDOFF de la trilogía: https://www.admiranext.com/HANDOFF.md
 
 ## Federación (viceversa)

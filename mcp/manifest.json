@@ -4,9 +4,9 @@
   "description": "Hub MCP de la tienda de robots de la trilogía AdmiraNeXT. Sitio estático de venta y alquiler de robots Agibot/Unitree; la API operativa viva se federa desde el Consejo (admira.live).",
   "version": "v.26.06.19.r1",
   "type": "static-site",
-  "site": "https://www.admira.shop",
-  "hub": "https://www.admira.shop/mcp/",
-  "llms_txt": "https://www.admira.shop/mcp/llms.txt",
+  "site": "https://admira.shop",
+  "hub": "https://admira.shop/mcp/",
+  "llms_txt": "https://admira.shop/mcp/llms.txt",
   "repo": "https://github.com/csilvasantin/admira-bots",
   "contact": { "telegram_group": "AdmiraXP", "signature": "Admira IA" },
 
@@ -24,7 +24,7 @@
   ],
 
   "docs": {
-    "publishing": "https://www.admira.shop/PUBLISHING.md",
+    "publishing": "https://admira.shop/PUBLISHING.md",
     "handoff_trilogia": "https://www.admiranext.com/HANDOFF.md"
   },
 

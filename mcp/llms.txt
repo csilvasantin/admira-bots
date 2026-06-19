@@ -1,0 +1,44 @@
+# Admira.shop (tienda de robots · admira.shop)
+
+> Tienda de la trilogía AdmiraNeXT: venta y alquiler de robots Agibot (y Unitree)
+> en España. Esta sección /mcp es la puerta para que cualquier agente entienda el
+> catálogo y los formatos, y salte al resto de la trilogía — y viceversa. Sitio
+> estático; la API operativa viva vive en el Consejo (admira.live) y se federa aquí.
+
+Sitio: https://www.admira.shop
+Hub MCP: https://www.admira.shop/mcp/
+Manifest máquina: https://www.admira.shop/mcp/manifest.json
+Versión: v.26.06.19.r1
+Repo: https://github.com/csilvasantin/admira-bots
+
+## Qué es
+
+Compra o alquila robots Agibot para activar tu marca. Formatos según el uso:
+evento, operación o laboratorio. Desde una demo rápida hasta una implantación
+completa, con encaje comercial y técnico.
+
+## Superficie pública (sitio estático)
+
+- Home: https://www.admira.shop/
+- Venta: https://www.admira.shop/venta.html
+- Alquiler: https://www.admira.shop/alquiler.html
+- Catálogo: https://www.admira.shop/catalogo.html
+- Contacto: https://www.admira.shop/contacto.html
+- Fichas Agibot: https://www.admira.shop/agibot/ (A2 Lite, A2 Ultra, A2-W, D1 Family, D1 Ultra, G1, G2, especialidades).
+- Unitree: https://www.admira.shop/unitree/
+
+## Documentación
+
+- Publicación: https://www.admira.shop/PUBLISHING.md
+- HANDOFF de la trilogía: https://www.admiranext.com/HANDOFF.md
+
+## Federación (viceversa)
+
+Misma convención `/mcp/` en cada pata:
+- Matriz: https://www.admiranext.com/mcp/
+- Consejo (API viva): https://www.admira.live/mcp/ — estado de flota, AgoraMatrix, tareas.
+
+## Convenciones
+
+- Versionado visible: v.AA.MM.DD.rN.
+- Avisos de cambios: Telegram grupo AdmiraXP, firmados "Admira IA".

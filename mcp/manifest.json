@@ -1,0 +1,37 @@
+{
+  "name": "admira-shop-tienda",
+  "title": "Admira.shop · Tienda de robots (Agibot)",
+  "description": "Hub MCP de la tienda de robots de la trilogía AdmiraNeXT. Sitio estático de venta y alquiler de robots Agibot/Unitree; la API operativa viva se federa desde el Consejo (admira.live).",
+  "version": "v.26.06.19.r1",
+  "type": "static-site",
+  "site": "https://www.admira.shop",
+  "hub": "https://www.admira.shop/mcp/",
+  "llms_txt": "https://www.admira.shop/mcp/llms.txt",
+  "repo": "https://github.com/csilvasantin/admira-bots",
+  "contact": { "telegram_group": "AdmiraXP", "signature": "Admira IA" },
+
+  "offer": "Venta y alquiler de robots Agibot (y Unitree) en España",
+  "formats": ["evento", "operación", "laboratorio"],
+
+  "pages": [
+    { "path": "/", "desc": "Home de la tienda." },
+    { "path": "/venta.html", "desc": "Venta de robots." },
+    { "path": "/alquiler.html", "desc": "Alquiler de robots." },
+    { "path": "/catalogo.html", "desc": "Catálogo y especificaciones." },
+    { "path": "/contacto.html", "desc": "Comprar, alquilar o probar." },
+    { "path": "/agibot/", "desc": "Fichas Agibot: A2 Lite, A2 Ultra, A2-W, D1 Family, D1 Ultra, G1, G2, especialidades." },
+    { "path": "/unitree/", "desc": "Modelos Unitree." }
+  ],
+
+  "docs": {
+    "publishing": "https://www.admira.shop/PUBLISHING.md",
+    "handoff_trilogia": "https://www.admiranext.com/HANDOFF.md"
+  },
+
+  "federation": {
+    "note": "Misma convención /mcp/ en cada pata de la trilogía (viceversa).",
+    "matriz": "https://www.admiranext.com/mcp/",
+    "consejo": "https://www.admira.live/mcp/",
+    "consejo_live_api": "https://macmini.tail48b61c.ts.net"
+  }
+}

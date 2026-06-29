@@ -1,0 +1,32 @@
+User-agent: *
+Allow: /
+
+# AI Crawlers - Allowed (coherente con admiranext.com)
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+User-agent: GoogleOther
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: cohere-ai
+Allow: /
+
+# AI Crawlers - Blocked
+User-agent: CCBot
+Disallow: /
+User-agent: anthropic-ai
+Disallow: /
+
+Sitemap: https://admira.shop/sitemap.xml

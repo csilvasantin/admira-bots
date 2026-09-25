@@ -1,0 +1,29 @@
+{
+  "nota": "Muebles de Pixeria a la venta en admira.shop (encargo #4396). La regla es de Carlos: todo asset que se da de alta en Pixeria puede venderse aquí. La tienda lee en vivo el índice público de Pixeria (https://stock.admira.store/stock/index.json), así que un mueble nuevo aparece solo, sin tocar este fichero. Aquí solo va lo que Pixeria no sabe: si un asset NO está a la venta (enVenta:false), su precio de venta en euros con IVA (precioEUR; null = precio pendiente, lo fija Carlos) y, si hace falta, el título, texto y foto de la ficha. El campo price de Pixeria son créditos del Xpacio, no euros, y no se usa como precio de venta.",
+  "moneda": "EUR",
+  "iva": 21,
+  "cobro": {
+    "activo": false,
+    "nota": "El pago online no está montado: el botón Comprar queda preparado y, mientras tanto, abre una solicitud de compra por correo."
+  },
+  "contacto": "info@admira.com",
+  "porDefecto": {
+    "enVenta": true,
+    "precioEUR": null
+  },
+  "tipos": ["furni"],
+  "assets": {
+    "1790370186236-n4eyaq": {
+      "titulo": "Cafetera de la cafetería de Alsea",
+      "texto": "Viene de la sala que diseñamos para la cafetería de Alsea, donde está detrás de la barra. Es la pieza que da sentido al mostrador y en la que el cliente se fija antes que en ninguna otra. Es un modelo 3D con sus medidas reales (94 × 56,8 × 50 cm), listo para colocarlo en tu propio Xpacio y editarlo en Pixeria.",
+      "foto": "https://api.yokup.com/media/fleet/c7e139c8a7551532.png",
+      "precioEUR": null,
+      "destacado": 1
+    },
+    "1790368707714-jwgkfk": {
+      "titulo": "Silla azul de la cafetería de Alsea · 95 cm",
+      "precioEUR": null,
+      "destacado": 2
+    }
+  }
+}

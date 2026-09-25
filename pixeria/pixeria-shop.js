@@ -119,6 +119,7 @@
     // textoWallapop manda: el de la ficha habla del modelo 3D, no del mueble físico.
     var s = (p.textoWallapop || p.texto || textoPorDefecto(p)) + '\n\n';
     if (p.dims) s += 'Medidas: ' + p.dims.map(num).join(' × ') + ' cm.\n';
+    if (p.isbn) s += 'ISBN: ' + p.isbn + '.\n';
     if (p.cantidad > 1) s += 'Unidades disponibles: ' + p.cantidad + '.\n';
     s += 'Estado: de segunda mano.\n';
     s += 'Ficha y visor 3D: https://admira.shop/pixeria/?id=' + p.id;
@@ -197,7 +198,7 @@
       campoWallapop('titulo', 'Título', tituloWallapop(p)) +
       campoWallapop('descripcion', 'Descripción', descripcionWallapop(p), true) +
       campoWallapop('precio', 'Precio', precio) +
-      campoWallapop('categoria', 'Categoría sugerida', wp.categoria || WALLAPOP_CATEGORIA) +
+      campoWallapop('categoria', 'Categoría sugerida', p.categoriaWallapop || wp.categoria || WALLAPOP_CATEGORIA) +
       campoWallapop('estado', 'Estado', wp.estado || 'De segunda mano') +
       '<div class="campo"><div class="campo-cab"><span>Fotos</span>' +
         (fotos.length ? '<button type="button" class="copiar" data-todas>Descargar todas</button>' : '') + '</div>' +
@@ -231,7 +232,7 @@
     d.innerHTML =
       '<form method="dialog" class="wp-cab"><h2>Anuncio para eBay</h2>' +
         '<button class="cerrar" aria-label="Cerrar">×</button></form>' +
-      '<p class="aviso eb-estado">' + (eb.worker ? 'Consultando el enlace con eBay…' :
+      '<p class="aviso eb-estado">' + (p.soloVistaPrevia ? 'Vista previa del anuncio del libro para copiarlo en eBay; nada se publica desde aquí.' : eb.worker ? 'Consultando el enlace con eBay…' :
         'eBay aún no está conectado: faltan las credenciales de la cuenta vendedora. Esto es la vista previa; nada se publica.') + '</p>' +
       '<div class="campo"><div class="campo-cab"><span>Título</span></div><p class="eb-dato">' + esc(p.titulo.slice(0, 80)) + '</p></div>' +
       '<div class="campo"><div class="campo-cab"><span>Precio · estado</span></div><p class="eb-dato">' +
@@ -244,7 +245,7 @@
     document.body.appendChild(d);
     d.addEventListener('close', function () { d.remove(); });
     d.showModal();
-    if (!eb.worker) return;
+    if (!eb.worker || p.soloVistaPrevia) return;
     var estado = d.querySelector('.eb-estado');
     var boton = d.querySelector('.publicar-ebay');
     var llamar = function (cuerpo, clave) {
@@ -332,6 +333,26 @@
     };
   }
 
+  // Anuncio de segunda mano del libro físico (no del modelo 3D).
+  function anuncioLibro(p, l) {
+    var edicion = l.edicion ? ' Edición: ' + l.edicion + '.' : '';
+    return {
+      id: p.id,
+      titulo: l.titulo + (l.autor ? ' · ' + l.autor : ''),
+      texto: null,
+      textoWallapop: 'Libro «' + (l.titulo_es || l.titulo) + '», de ' + l.autor + '.' + edicion +
+        ' De segunda mano, en buen estado. Pregunta lo que necesites antes de comprar.',
+      isbn: l.isbn,
+      dims: null,
+      cantidad: null,
+      precio: null,
+      fotos: [l.portada].filter(Boolean),
+      fotosMatrix: [],
+      categoriaWallapop: 'Cine, libros y música > Libros',
+      soloVistaPrevia: true
+    };
+  }
+
   function bloqueLibro(l) {
     if (!l.identificado) {
       return '<div class="compra"><span class="precio pendiente">Sin identificar</span>' +
@@ -345,8 +366,10 @@
       '</div>' +
       '<div class="segunda-mano">' +
         '<p class="eyebrow">Segunda mano</p>' +
-        '<a class="ver-wallapop" href="' + esc(c.wallapop) + '" target="_blank" rel="noopener">Buscar en Wallapop ↗</a>' +
-        '<a class="publicar-ebay-ficha" href="' + esc(c.ebay) + '" target="_blank" rel="noopener">Buscar usado en eBay ↗</a>' +
+        '<button class="vender-wallapop" type="button">Vender en Wallapop</button>' +
+        '<button class="publicar-ebay-ficha" type="button">Vender en eBay</button>' +
+        '<p class="aviso">¿Lo buscas usado? <a href="' + esc(c.wallapop) + '" target="_blank" rel="noopener">Wallapop ↗</a> · ' +
+          '<a href="' + esc(c.ebay) + '" target="_blank" rel="noopener">eBay ↗</a></p>' +
       '</div>';
   }
 
@@ -434,23 +457,26 @@
             '<button class="comprar" type="button" data-asset="' + esc(p.id) + '" data-precio="' + (p.precio == null ? '' : p.precio) + '">Comprar</button>' +
             (cobro.activo ? '' : '<p class="aviso">Pago online en preparación: al pulsar se abre una solicitud de compra por correo.</p>') +
           '</div>' +
-          '<div class="segunda-mano">' +
+          (p.libro && p.libro.identificado ? '' : '<div class="segunda-mano">' +
             '<p class="eyebrow">Segunda mano</p>' +
             (p.wallapopUrl ? '<a class="ver-wallapop" href="' + esc(p.wallapopUrl) + '" target="_blank" rel="noopener">Ver en Wallapop ↗</a>' : '') +
             '<button class="vender-wallapop" type="button">' + (p.wallapopUrl ? 'Preparar otro anuncio' : 'Vender en Wallapop') + '</button>' +
             '<button class="publicar-ebay-ficha" type="button">Publicar en eBay</button>' +
-          '</div>' +
+          '</div>') +
         '</div>' +
       '</article>';
+
+    // En un libro, los anuncios son del libro físico, no del modelo 3D.
+    var anuncio = p.libro && p.libro.identificado ? anuncioLibro(p, p.libro) : p;
 
     app.querySelector('.vender-wallapop').addEventListener('click', function () {
       // Abrir la pestaña dentro del clic, o el bloqueador de ventanas la corta.
       window.open(WALLAPOP_SUBIR, '_blank', 'noopener');
-      panelWallapop(p, venta);
+      panelWallapop(anuncio, venta);
     });
 
     app.querySelector('.publicar-ebay-ficha').addEventListener('click', function () {
-      panelEbay(p, venta);
+      panelEbay(anuncio, venta);
     });
 
     var galeria = app.querySelector('.fotos-matrix');

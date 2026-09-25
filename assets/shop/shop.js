@@ -23,17 +23,30 @@ async function catalogo() {
   return CAT;
 }
 const categoria = (id) => CAT.categorias.find((c) => c.id === id);
-// Si se llega desde yokup, la reposición viaja también a las fichas que se elijan desde un listado.
-const urlFicha = (p, repo = null) => `/p/${p.modelo}/` + (repo ? `?origen=yokup&equipo=${encodeURIComponent(repo.equipo)}` : '');
+// Si se llega desde yokup, la reposición (equipo y, si vienen, local y pantalla) viaja a las fichas elegidas.
+const urlFicha = (p, repo = null) => `/p/${p.modelo}/` + (repo ? '?' + new URLSearchParams({ origen: 'yokup', equipo: repo.equipo, ...(repo.local && { local: repo.local }), ...(repo.pantalla && { pantalla: repo.pantalla }) }) : '');
 
 function tarjetaProducto(p, repo = null) {
   const c = categoria(p.categoria);
   const t = el('a', { class: 'tarjeta', href: urlFicha(p, repo), style: `--c:${c.color}` },
-    el('img', { class: 'foto', src: p.foto, alt: '', loading: 'lazy', width: '600', height: '400' }),
+    el('div', { class: 'crt' }, el('img', { class: 'foto', src: p.foto, alt: '', loading: 'lazy', width: '600', height: '400' }), el('i', { class: 'led', 'aria-hidden': 'true' })),
     el('h3', { text: p.nombre }),
     el('p', { text: p.resumen }),
     el('div', { class: 'pie' }, el('span', { class: 'precio', text: precioTexto(p) }), p.muestra ? el('span', { class: 'chip muestra', text: 'muestra' }) : el('span', { class: 'chip', text: c.nombre })));
   return t;
+}
+
+/** Panel de orden de trabajo: rojo mientras está pendiente, verde al entrar en el carrito. Sin local no se inventa el nombre. */
+function bloqueReposicion(repo, compacto = false) {
+  const estado = el('p', { class: 'repo-estado', role: 'status', text: compacto ? 'Elige el modelo para reponer.' : 'Marcado para reponer desde Yokup.' });
+  const datos = el('dl', { class: 'repo-datos' },
+    el('dt', { text: 'Local' }), el('dd', { text: repo.local || 'Lo identificamos por el equipo en Yokup' }),
+    ...(repo.pantalla ? [el('dt', { text: 'Pantalla' }), el('dd', { text: repo.pantalla })] : []),
+    el('dt', { text: 'Equipo' }), el('dd', { text: repo.equipo }));
+  const nodo = el('section', { class: 'reposicion', role: 'note', 'aria-label': 'Reposición', 'data-estado': 'pendiente' },
+    el('span', { class: 'led', 'aria-hidden': 'true' }),
+    el('div', {}, el('p', { class: 'repo-titulo', text: '↻ Reposición para' }), datos), estado);
+  return { nodo, ok() { nodo.dataset.estado = 'ok'; estado.textContent = 'Reposición en el carrito. Envía el pedido y la pantalla vuelve a verde tras la instalación.'; } };
 }
 function tarjetaCategoria(c) {
   const n = CAT.productos.filter((p) => p.categoria === c.id).length;
@@ -53,7 +66,8 @@ function pintarCatalogo(destino, cat, motivo, repo = null) {
     ...CAT.categorias.map((c) => el('a', { href: `/catalogo/?cat=${c.id}`, 'aria-current': c.id === cat ? 'true' : 'false', text: c.nombre })));
   const c = cat && categoria(cat);
   destino.replaceChildren(
-    ...(repo ? [el('p', { class: 'reposicion', role: 'note' }, el('span', { text: '↻', 'aria-hidden': 'true' }), el('span', { text: `${repo.texto}: elige el modelo` }))] : []),
+    el('p', { class: 'episodio', text: 'Archivo de piezas' }),
+    ...(repo ? [bloqueReposicion(repo, true).nodo] : []),
     ...(motivo ? [el('p', { class: 'aviso', text: motivo })] : []),
     el('p', { class: 'prompt', text: `ls /xpacio/${cat || '*'}` }),
     el('h1', { text: c ? c.nombre : 'Todo para tu Xpacio' }),
@@ -65,7 +79,8 @@ function pintarCatalogo(destino, cat, motivo, repo = null) {
 async function paginaCatalogo() {
   await catalogo();
   const cat = new URLSearchParams(location.search).get('cat');
-  pintarCatalogo($('#vista'), categoria(cat) ? cat : null, cat && !categoria(cat) ? `No existe la categoría «${cat}»: te enseñamos todo el catálogo.` : null);
+  const repo = reposicion(location.search);
+  pintarCatalogo($('#vista'), categoria(cat) ? cat : null, cat && !categoria(cat) ? `No existe la categoría «${cat}»: te enseñamos todo el catálogo.` : null, repo);
   if (categoria(cat)) document.title = `${categoria(cat).nombre} · admira.shop`;
 }
 
@@ -88,12 +103,17 @@ async function ficha() {
   // Opción de instalación y soporte (solo en equipos: un servicio no se instala).
   const opciones = esServicio ? [] : OPCIONES.map((o) => ({ ...o, p: CAT.productos.find((x) => x.modelo === o.modelo) })).filter((o) => o.p)
     .map((o) => ({ ...o, check: el('input', { type: 'checkbox', value: o.modelo }) }));
-  const anadir = el('button', { class: 'btn primario grande', type: 'button', text: repo ? 'Añadir reposición al carrito' : 'Añadir al carrito' });
+  const repoUI = repo ? bloqueReposicion(repo) : null;
+  const anadir = el('button', { class: repo ? 'btn reponer grande' : 'btn primario grande', type: 'button', text: repo ? 'Añadir reposición al carrito' : 'Añadir al carrito' });
   anadir.onclick = () => {
     const equipo = repo ? repo.equipo : null;
-    let c2 = carritoAnadir(leerCarrito(), p.modelo, cantidad.value, equipo);
-    for (const o of opciones) if (o.check.checked) c2 = carritoAnadir(c2, o.modelo, cantidad.value, equipo);
+    const lugar = repo ? { local: repo.local, pantalla: repo.pantalla } : null;
+    let c2 = carritoAnadir(leerCarrito(), p.modelo, cantidad.value, equipo, lugar);
+    for (const o of opciones) if (o.check.checked) c2 = carritoAnadir(c2, o.modelo, cantidad.value, equipo, lugar);
     guardarCarrito(c2);
+    if (repoUI) repoUI.ok();
+    const b = document.querySelector('[data-contador]');
+    if (b) { b.classList.remove('salta'); void b.offsetWidth; b.classList.add('salta'); }
     const extra = opciones.filter((o) => o.check.checked).map((o) => o.texto.toLowerCase());
     estado.replaceChildren(`Añadido${extra.length ? ` con ${extra.join(' y ')}` : ''}. `, el('a', { href: '/carrito/', text: 'Ver carrito →' }));
   };
@@ -116,10 +136,10 @@ async function ficha() {
     el('a', { class: 'btn', href: `/vende/?categoria=${encodeURIComponent(c.id)}`, text: 'Tasar mi equipo usado →' }));
   vista.replaceChildren(
     el('p', { class: 'prompt' }, 'cat ', el('span', { text: `/p/${p.modelo}/` })),
-    ...(repo ? [el('p', { class: 'reposicion', role: 'note' }, el('span', { text: '↻', 'aria-hidden': 'true' }), el('span', { text: repo.texto }))] : []),
+    ...(repoUI ? [repoUI.nodo] : []),
     el('div', { class: 'ficha' },
-      el('div', { class: 'visual', style: `--c:${c.color}` }, el('img', { src: p.foto, alt: `${p.nombre} (ilustración)`, width: '600', height: '400' })),
-      el('div', {},
+      el('div', { class: 'visual crt', style: `--c:${c.color}` }, el('img', { src: p.foto, alt: `${p.nombre} (ilustración)`, width: '600', height: '400' }), el('i', { class: 'led', 'aria-hidden': 'true' })),
+      el('div', { style: `--c:${c.color}` },
         el('p', { class: 'marca-chip', text: `${p.marca !== '—' ? p.marca + ' · ' : ''}${c.nombre}` }),
         el('h1', { text: p.nombre }), el('p', { class: 'lead', text: p.resumen }),
         compra,
@@ -128,6 +148,16 @@ async function ficha() {
         datos,
         ...(p.url ? [el('div', { class: 'botones' }, el('a', { class: 'btn', href: p.url, text: p.categoria === 'robots' ? 'Ver ficha completa del robot' : 'Ir al servicio' }))] : []))),
     ...(vende ? [vende] : []));
+  const otras = productosDe(CAT, p.categoria).filter((x) => x.modelo !== p.modelo).slice(0, 3);
+  document.querySelector('[data-relacionadas]')?.remove();
+  if (otras.length) {
+    const puntos = el('span', { class: 'puntos', 'aria-hidden': 'true' }, el('i'), el('i'), el('i'));
+    vista.closest('main')?.append(el('section', { class: 'ventana', 'data-relacionadas': '' },
+      el('header', {}, puntos, el('span', { class: 'ruta', text: `ls /xpacio/${c.id}` })),
+      el('div', { class: 'cuerpo' },
+        el('p', { class: 'episodio', text: 'Otras piezas del mismo capítulo' }),
+        el('div', { class: 'rejilla' }, ...otras.map((x) => tarjetaProducto(x, repo))))));
+  }
 }
 
 async function carrito() {
@@ -140,7 +170,8 @@ async function carrito() {
       const p = CAT.productos.find((x) => x.modelo === l.modelo);
       const quitar = el('button', { class: 'btn', type: 'button', text: 'Quitar' });
       quitar.onclick = () => { guardarCarrito(carritoQuitar(leerCarrito(), i)); pintar(); };
-      return el('tr', {}, el('td', {}, el('a', { href: `/p/${l.modelo}/`, text: p ? p.nombre : l.modelo }), l.equipo ? el('small', { text: `Reposición del equipo ${l.equipo}` }) : null),
+      const notaRepo = l.equipo ? `Reposición del equipo ${l.equipo}${l.local ? ` · ${l.local}` : ''}${l.pantalla ? ` · ${l.pantalla}` : ''}` : '';
+      return el('tr', {}, el('td', {}, el('a', { href: `/p/${l.modelo}/`, text: p ? p.nombre : l.modelo }), notaRepo ? el('small', { text: notaRepo }) : null),
         el('td', { text: String(l.cantidad) }), el('td', { text: precioTexto(p) }),
         el('td', { class: 'precio', text: p ? euros(p.precio * l.cantidad) + (p.periodo === 'mes' ? '/mes' : '') : '—' }), el('td', {}, quitar));
     });

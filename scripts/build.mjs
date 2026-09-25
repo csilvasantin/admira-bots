@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { validarCatalogo, precioTexto } from '../assets/shop/core.mjs';
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
-const VERSION = process.env.SHOP_VERSION || 'v.26.09.25.r2';
+const VERSION = process.env.SHOP_VERSION || 'v.26.09.25.r3';
 const DOMINIO = 'https://admira.shop';
 const cat = JSON.parse(readFileSync(join(RAIZ, 'data/catalogo.json'), 'utf8'));
 const errores = validarCatalogo(cat);
@@ -35,11 +35,15 @@ function pagina({ page, titulo, descripcion, ruta, main }) {
 <meta property="og:image" content="${DOMINIO}/og-image.jpg"><meta property="og:url" content="${DOMINIO}${ruta}"><meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#1a1a2e">
 <link rel="preload" href="/assets/shop/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=VT323&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/shop/shop.css?v=${VERSION}">
 <script type="module" src="/assets/shop/shop.js?v=${VERSION}"></script>
 </head>
 <body data-page="${page}">
 <div class="fondo" aria-hidden="true"><video autoplay muted loop playsinline preload="metadata" poster="/assets/shop/robots.jpg"><source src="/assets/shop/fondo.mp4" type="video/mp4"></video></div>
+<div class="horizonte" aria-hidden="true"><div class="sol"></div><div class="suelo"></div></div>
 <header class="barra">
   <a class="marca" href="/" aria-label="ADmira.shop, inicio"><span class="admira">ADmira.</span><span class="neon"><span class="bln bln-1">S</span><span class="bln bln-2">H</span><span class="bln bln-3">O</span><span class="bln bln-4">P</span></span></a>
   <nav class="menu" aria-label="Principal">${menu}</nav>
@@ -48,7 +52,7 @@ function pagina({ page, titulo, descripcion, ruta, main }) {
 ${main}
 </main>
 <footer class="pie-web">
-  <span>ADmira.shop · tienda del Xpacio AdmiraXperience</span>
+  <span>ADmira.shop · la tienda del Xpacio AdmiraXperience</span>
   <a href="mailto:${cat.contacto}">${cat.contacto}</a>
   <a href="https://www.admiranext.com/">admiranext.com</a>
   <a href="/robots.html">Robots Agibot y Unitree</a>
@@ -59,7 +63,7 @@ ${main}
 </html>
 `;
 }
-const ventana = (ruta, cuerpo, extra = '') => `<section class="ventana"${extra}><header><span class="puntos" aria-hidden="true"><i></i><i></i><i></i></span><span class="ruta">${ruta}</span></header><div class="cuerpo">${cuerpo}</div></section>`;
+const ventana = (ruta, cuerpo, extra = '', episodio = '') => `<section class="ventana"${extra}><header><span class="puntos" aria-hidden="true"><i></i><i></i><i></i></span><span class="ruta">${ruta}</span></header><div class="cuerpo">${episodio ? `<p class="episodio">${episodio}</p>\n` : ''}${cuerpo}</div></section>`;
 const escribir = (rel, html) => { const f = join(RAIZ, rel); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, html); };
 
 // La home de robots de siempre queda en /robots.html (solo la primera vez: después la home ya es la del Xpacio).
@@ -69,14 +73,14 @@ if (!existsSync(join(RAIZ, 'robots.html'))) copyFileSync(join(RAIZ, 'index.html'
 escribir('index.html', pagina({ page: 'home', ruta: '/', titulo: 'ADmira.shop · Todo para tu Xpacio: compra, renueva y véndenos tu equipo',
   descripcion: 'Pantallas, players, sonido, aromas, wifi, cámaras, kioscos, robots y servicios para el Xpacio AdmiraXperience. Compra con precios cerrados o véndenos tu equipo usado.',
   main: [
-    ventana('user@admira.shop ~ %', `<p class="prompt">boot xpacio --tienda</p><p class="prompt">montando pantallas, sonido, aroma y red… <span class="ok">ok</span></p>
-<h1>Todo lo que hace vivo tu <span class="acento">Xpacio</span>.</h1>
+    ventana('user@admira.shop ~ %', `<p class="prompt">boot xpacio --desde 1985 --hasta mañana</p><p class="prompt">montando pantallas, sonido, aroma y red… <span class="ok">ok</span></p>
+<h1 class="cromado">Todo lo que hace vivo tu <span class="acento">Xpacio</span>.</h1>
 <p class="lead">Compra, renueva o véndenos lo que ya tienes. Pantallas, players, hilo musical, aromas, wifi, cámaras, kioscos, robots y los servicios para que todo funcione.</p>
-<div class="botones"><a class="btn primario" href="#xpacio">Entra en el Xpacio ↓</a><a class="btn" href="/catalogo/">Ver catálogo</a><a class="btn" href="/vende/">Véndenos tu equipo</a></div>`),
-    ventana('~/xpacio · pulsa cualquier elemento', `<div class="escena">${escena}</div><p class="escena-pista">Pulsa un elemento del local para ver su categoría. También puedes elegirla abajo.</p>`, ' id="xpacio"'),
-    ventana('ls ~/xpacio/categorias', `<h2>Categorías</h2><div class="rejilla" id="categorias"><p class="lead">Cargando categorías…</p></div>`),
-    `<div class="dos">${ventana('~/renove', `<h2>Véndenos tu equipo</h2><p class="lead">¿Renuevas pantallas, players o robots? Te compramos o recogemos el equipo usado y lo tenemos en cuenta en tu nuevo presupuesto.</p><div class="botones"><a class="btn primario" href="/vende/">Ofrecer mi equipo →</a></div>`)}
-${ventana('~/yokup', `<h2>¿Vienes desde Yokup?</h2><p class="lead">Desde la ficha de inventario de un equipo, «Reponer» te trae aquí con el equipo ya identificado: pides la reposición y sabemos para qué pantalla es.</p><div class="botones"><a class="btn" href="/p/samsung-qm55c/?origen=yokup&amp;equipo=EJEMPLO-01">Ver un ejemplo →</a></div>`)}</div>`,
+<div class="botones"><a class="btn primario" href="#xpacio">Entra en el Xpacio ↓</a><a class="btn" href="/catalogo/">Ver catálogo</a><a class="btn" href="/vende/">Véndenos tu equipo</a></div>`, '', 'Episodio I · La tienda del Xpacio'),
+    ventana('~/xpacio · noche de apertura', `<div class="escena">${escena}</div><p class="escena-pista">Pulsa cualquier pieza del local: cada una abre su capítulo del catálogo.</p>`, ' id="xpacio"', 'Escena 1 · El local despierta'),
+    ventana('ls ~/xpacio/categorias', `<h2>Categorías</h2><div class="rejilla" id="categorias"><p class="lead">Cargando categorías…</p></div>`, '', 'Nueve piezas · un solo circuito'),
+    `<div class="dos">${ventana('~/renove', `<h2>Véndenos tu equipo</h2><p class="lead">¿Renuevas pantallas, players o robots? Te compramos o recogemos el equipo usado y lo tenemos en cuenta en tu nuevo presupuesto.</p><div class="botones"><a class="btn primario" href="/vende/">Ofrecer mi equipo →</a></div>`, '', 'Episodio II · Segunda vida')}
+${ventana('~/yokup', `<h2>¿Vienes desde Yokup?</h2><p class="lead">Una pantalla cae en rojo, Yokup la ve y pulsas «Reponer»: llegas aquí con el local y el equipo ya identificados. Del rojo al verde en un pedido.</p><div class="botones"><a class="btn reponer" href="/p/samsung-qm55c/?origen=yokup&amp;equipo=EJEMPLO-01&amp;local=Local%20de%20ejemplo&amp;pantalla=Pantalla%20de%20ejemplo">Ver un ejemplo</a></div>`, '', 'Episodio III · La pantalla en rojo')}</div>`,
   ].join('\n') }));
 
 // ── Catálogo ──
@@ -101,7 +105,7 @@ escribir('carrito/index.html', pagina({ page: 'carrito', ruta: '/carrito/', titu
 <label class="ancho">Ciudad o dirección de entrega<input name="ciudad" autocomplete="address-level2"></label>
 <label class="ancho">Comentarios<textarea name="comentarios" placeholder="Plazos, instalación, número de locales…"></textarea></label>
 <div class="botones ancho"><button class="btn primario">Enviar pedido</button><button class="btn" type="button" id="copiar-pedido">Copiar pedido</button></div>
-<p id="estado-pedido" class="estado ancho" role="status"></p></form>`) }));
+<p id="estado-pedido" class="estado ancho" role="status"></p></form>`, '', 'Bodega de carga') }));
 
 // ── Véndenos tu equipo ──
 escribir('vende/index.html', pagina({ page: 'vende', ruta: '/vende/', titulo: 'Véndenos tu equipo · ADmira.shop', descripcion: 'Recompra y renove: véndenos o entréganos tu pantalla, player, robot o equipo usado.',
@@ -115,7 +119,7 @@ escribir('vende/index.html', pagina({ page: 'vende', ruta: '/vende/', titulo: 'V
 <label>Nombre<input name="nombre" autocomplete="name" required></label><label>Empresa<input name="empresa" autocomplete="organization"></label>
 <label>Email<input name="email" type="email" autocomplete="email" required></label><label>Teléfono<input name="telefono" type="tel" autocomplete="tel"></label>
 <label class="ancho">Comentarios<textarea name="comentarios" placeholder="Accesorios, soportes, fotos disponibles…"></textarea></label>
-<div class="botones ancho"><button class="btn primario">Enviar oferta</button></div><p id="estado-venta" class="estado ancho" role="status"></p></form>`) }));
+<div class="botones ancho"><button class="btn primario">Enviar oferta</button></div><p id="estado-venta" class="estado ancho" role="status"></p></form>`, '', 'Segunda vida') }));
 
 // ── Sitemap: se mantienen las páginas de robots y se añaden las nuevas ──
 const urls = ['/', '/catalogo/', '/vende/', '/carrito/', '/robots.html', '/catalogo.html', '/venta.html', '/alquiler.html', '/contacto.html',

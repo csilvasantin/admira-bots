@@ -35,12 +35,29 @@ test('/p/<modelo>/: ficha si existe; si no, catálogo de pantallas — nunca un 
 });
 
 test('contrato con yokup (#4286): ?origen=yokup&equipo=<id> → «Reposición para el equipo <id>»; nada raro se cuela', () => {
-  assert.deepEqual(reposicion('?origen=yokup&equipo=PANT-0042'), { origen: 'yokup', equipo: 'PANT-0042', texto: 'Reposición para el equipo PANT-0042' });
+  assert.deepEqual(reposicion('?origen=yokup&equipo=PANT-0042'), { origen: 'yokup', equipo: 'PANT-0042', local: null, pantalla: null, texto: 'Reposición para el equipo PANT-0042' });
   assert.equal(reposicion('?equipo=PANT-0042'), null, 'sin origen=yokup no es reposición');
   assert.equal(reposicion('?origen=yokup&equipo=<script>'), null);
   assert.equal(sp(precioTexto({ precio: 1290 })), '1.290 €');
   assert.equal(sp(precioTexto({ precio: 29, periodo: 'mes' })), '29 €/mes');
   assert.equal(sp(precioTexto({ precio: 0 })), 'Gratis');
+});
+
+test('reposición: local y pantalla válidos se devuelven; si faltan quedan en null', () => {
+  assert.deepEqual(reposicion('?origen=yokup&equipo=TEST&local=Starbucks-Gran-Via&pantalla=P2'), {
+    origen: 'yokup', equipo: 'TEST', local: 'Starbucks-Gran-Via', pantalla: 'P2', texto: 'Reposición para el equipo TEST',
+  });
+  assert.deepEqual(reposicion('?origen=yokup&equipo=TEST&local=  Cafetería   Gran Vía  '), {
+    origen: 'yokup', equipo: 'TEST', local: 'Cafetería Gran Vía', pantalla: null, texto: 'Reposición para el equipo TEST',
+  });
+});
+
+test('reposición: una etiqueta con <script> o de más de 80 caracteres pasa a null y no se inventa', () => {
+  const sucio = reposicion(`?origen=yokup&equipo=TEST&local=${encodeURIComponent('<script>alert(1)</script>')}&pantalla=${'A'.repeat(81)}`);
+  assert.equal(sucio.local, null);
+  assert.equal(sucio.pantalla, null);
+  assert.equal(sucio.equipo, 'TEST');
+  assert.equal(sucio.texto, 'Reposición para el equipo TEST');
 });
 
 test('carrito y peticiones: la reposición viaja con su equipo; el correo va a info@admira.com', () => {
@@ -55,6 +72,9 @@ test('carrito y peticiones: la reposición viaja con su equipo; el correo va a i
   assert.match(txt, /3 × Samsung QM55C \(samsung-qm55c\) · [\d.]+ € · reposición del equipo PANT-0042 \(yokup\)/);
   assert.match(txt, new RegExp(`Total: ${sp(totalTexto(carritoImportes(c, cat))).replace(/[().]/g, '\\$&')}`));
   assert.match(txt, /Email: ana@example.test/); assert.doesNotMatch(txt, /Teléfono/);
+  const conLugar = carritoAnadir([], 'samsung-qm55c', 1, 'TEST', { local: 'Starbucks-Gran-Via', pantalla: 'P2' });
+  assert.equal(conLugar[0].local, 'Starbucks-Gran-Via');
+  assert.match(sp(textoPedido(conLugar, cat, { nombre: 'Ana' })), /reposición del equipo TEST · local Starbucks-Gran-Via · pantalla P2 \(yokup\)/);
   assert.equal(carritoTotal(carritoQuitar(c, 0)), 1);
   assert.match(textoVenta({ categoria: 'Pantallas', modelo: 'QM55C', estado: 'funciona' }), /recompra \/ renove[\s\S]*Modelo: QM55C/);
   assert.match(mailto(cat.contacto, 'Petición', 'a b'), /^mailto:info@admira\.com\?subject=Petici%C3%B3n&body=a%20b$/);

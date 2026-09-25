@@ -2,11 +2,12 @@
   <title id="xp-t">Tu Xpacio AdmiraXperience</title>
   <desc id="xp-d">Un local con pantalla, player, altavoces, aroma, wifi, cámara, kiosco, robot y servicios. Cada elemento lleva a su categoría.</desc>
   <defs>
-    <linearGradient id="xp-pared" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b2b4a"/><stop offset="1" stop-color="#222239"/></linearGradient>
+    <linearGradient id="xp-pared" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2152"/><stop offset=".55" stop-color="#2a2244"/><stop offset="1" stop-color="#1f1f38"/></linearGradient>
     <linearGradient id="xp-suelo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1f1f36"/><stop offset="1" stop-color="#15152a"/></linearGradient>
     <linearGradient id="xp-pantalla" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF3366" stop-opacity=".55"/><stop offset=".5" stop-color="#FF33CC" stop-opacity=".25"/><stop offset="1" stop-color="#33FF99" stop-opacity=".35"/></linearGradient>
     <linearGradient id="xp-cono" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7ce8d8" stop-opacity=".28"/><stop offset="1" stop-color="#7ce8d8" stop-opacity="0"/></linearGradient>
     <radialGradient id="xp-luz" cx=".5" cy=".3" r=".7"><stop offset="0" stop-color="#e8a87c" stop-opacity=".16"/><stop offset="1" stop-color="#e8a87c" stop-opacity="0"/></radialGradient>
+    <linearGradient id="xp-cinta" x1="0" x2="1"><stop offset="0" stop-color="#FF3366"/><stop offset=".33" stop-color="#FFCC00"/><stop offset=".66" stop-color="#33FF99"/><stop offset="1" stop-color="#FF33CC"/></linearGradient>
   </defs>
 
   <!-- El local -->
@@ -16,7 +17,11 @@
   <polygon points="1000,0 820,60 820,330 1000,560" fill="#232340"/>
   <polygon points="180,330 820,330 1000,560 0,560" fill="url(#xp-suelo)"/>
   <ellipse cx="500" cy="200" rx="420" ry="260" fill="url(#xp-luz)"/>
-  <g stroke="#3a3a5c" stroke-width="1" opacity=".7">
+  <rect x="180" y="58" width="640" height="3" fill="url(#xp-cinta)" opacity=".9"/>
+  <g class="rejilla-suelo" stroke="#FF33CC" stroke-opacity=".45" stroke-width="1.5">
+    <line x1="260" y1="330" x2="100" y2="560"/><line x1="420" y1="330" x2="380" y2="560"/>
+    <line x1="580" y1="330" x2="620" y2="560"/><line x1="740" y1="330" x2="900" y2="560"/>
+    <line x1="160" y1="360" x2="840" y2="360"/><line x1="30" y1="520" x2="970" y2="520"/>
     <line x1="180" y1="60" x2="180" y2="330"/><line x1="820" y1="60" x2="820" y2="330"/>
     <line x1="180" y1="330" x2="820" y2="330"/>
     <line x1="340" y1="330" x2="250" y2="560"/><line x1="500" y1="330" x2="500" y2="560"/><line x1="660" y1="330" x2="750" y2="560"/>
@@ -31,8 +36,13 @@
     <g class="pieza">
       <rect x="370" y="100" width="260" height="150" rx="8" fill="#12121f" stroke="currentColor" stroke-width="3"/>
       <rect x="382" y="112" width="236" height="126" rx="4" fill="url(#xp-pantalla)"/>
-      <text x="500" y="172" text-anchor="middle" fill="#fff" font-family="JetBrains Mono, monospace" font-weight="800" font-size="22">ADmira<tspan fill="#FF3366">N</tspan><tspan fill="#FFCC00">e</tspan><tspan fill="#33FF99">X</tspan><tspan fill="#FF33CC">T</tspan></text>
-      <rect class="pulso" x="420" y="194" width="160" height="6" rx="3" fill="#fff" opacity=".5"/>
+      <g class="estado-pantalla">
+        <g class="rojo"><rect x="382" y="112" width="236" height="126" rx="4" fill="#3a0716" opacity=".85"/>
+          <text x="500" y="168" text-anchor="middle" fill="#ff5c7a" font-family="VT323, monospace" font-size="34">SIN SEÑAL</text>
+          <text x="500" y="196" text-anchor="middle" fill="#ff5c7a" font-family="VT323, monospace" font-size="18" opacity=".85">yokup · equipo marcado</text></g>
+        <g class="verde"><text x="500" y="166" text-anchor="middle" fill="#fff" font-family="Chakra Petch, monospace" font-weight="700" font-size="24">ADmira<tspan fill="#FF3366">N</tspan><tspan fill="#FFCC00">e</tspan><tspan fill="#33FF99">X</tspan><tspan fill="#FF33CC">T</tspan></text>
+          <text x="500" y="198" text-anchor="middle" fill="#33FF99" font-family="VT323, monospace" font-size="22">● EN LÍNEA</text></g>
+      </g>
       <rect x="490" y="250" width="20" height="10" fill="currentColor"/>
     </g>
     <rect class="etiqueta-fondo" x="398" y="68" width="204" height="26" rx="6" fill="#1a1a2e" stroke="currentColor"/>

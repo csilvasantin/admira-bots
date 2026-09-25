@@ -44,12 +44,15 @@ export function resolverFicha(cat, modelo) {
   return { tipo: 'catalogo', categoria: CATEGORIA_POR_DEFECTO, motivo: modelo ? `No tenemos el modelo «${modelo}» en el catálogo: estas son nuestras pantallas.` : null };
 }
 
-/** ?origen=yokup&equipo=<id> → {equipo}: la ficha se abre como reposición del equipo del inventario de yokup. */
+const ETIQUETA = /^[\p{L}\p{N} .,:;#@&'’()\/+_-]{1,80}$/u;
+/** ?origen=yokup&equipo=<id>&local=&pantalla= → reposición del inventario de yokup.
+ *  local y pantalla son opcionales: si faltan o no pasan la etiqueta, quedan en null (no se inventan). */
 export function reposicion(search) {
   const q = new URLSearchParams(search || '');
   const equipo = (q.get('equipo') || '').trim();
   if (q.get('origen') !== 'yokup' || !EQUIPO.test(equipo)) return null;
-  return { origen: 'yokup', equipo, texto: `Reposición para el equipo ${equipo}` };
+  const limpio = (v) => { const s = (v || '').trim().replace(/\s+/g, ' '); return s && ETIQUETA.test(s) ? s : null; };
+  return { origen: 'yokup', equipo, local: limpio(q.get('local')), pantalla: limpio(q.get('pantalla')), texto: `Reposición para el equipo ${equipo}` };
 }
 
 const EUR = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2, minimumFractionDigits: 0, useGrouping: 'always' });
@@ -66,12 +69,15 @@ export function productosDe(cat, categoria) {
 }
 
 // ── Carrito (se guarda en localStorage desde shop.js) ────────────────────────────────────────────────────
-export function carritoAnadir(carrito, modelo, cantidad = 1, equipo = null) {
+export function carritoAnadir(carrito, modelo, cantidad = 1, equipo = null, lugar = null) {
   const lista = Array.isArray(carrito) ? carrito.map((l) => ({ ...l })) : [];
   const n = Math.max(1, Math.min(999, Math.trunc(Number(cantidad) || 1)));
-  const clave = (l) => l.modelo === modelo && (l.equipo || null) === (equipo || null);
+  const local = lugar && typeof lugar.local === 'string' && lugar.local ? lugar.local : null;
+  const pantalla = lugar && typeof lugar.pantalla === 'string' && lugar.pantalla ? lugar.pantalla : null;
+  const clave = (l) => l.modelo === modelo && (l.equipo || null) === (equipo || null) && (l.local || null) === local && (l.pantalla || null) === pantalla;
   const linea = lista.find(clave);
-  if (linea) linea.cantidad = Math.min(999, linea.cantidad + n); else lista.push({ modelo, cantidad: n, ...(equipo ? { equipo } : {}) });
+  if (linea) linea.cantidad = Math.min(999, linea.cantidad + n);
+  else lista.push({ modelo, cantidad: n, ...(equipo ? { equipo } : {}), ...(local ? { local } : {}), ...(pantalla ? { pantalla } : {}) });
   return lista;
 }
 export function carritoQuitar(carrito, indice) { return (carrito || []).filter((_, i) => i !== indice); }
@@ -98,7 +104,7 @@ const linea = (k, v) => (v ? `${k}: ${v}` : null);
 export function textoPedido(carrito, cat, datos = {}) {
   const nombre = (m) => (cat?.productos || []).find((p) => p.modelo === m)?.nombre || m;
   const imp = carritoImportes(carrito, cat);
-  const items = imp.lineas.map((l) => `- ${l.cantidad} × ${nombre(l.modelo)} (${l.modelo}) · ${euros(l.subtotal)}${l.periodo === 'mes' ? '/mes' : ''}${l.equipo ? ` · reposición del equipo ${l.equipo} (yokup)` : ''}`);
+  const items = imp.lineas.map((l) => `- ${l.cantidad} × ${nombre(l.modelo)} (${l.modelo}) · ${euros(l.subtotal)}${l.periodo === 'mes' ? '/mes' : ''}${l.equipo ? ` · reposición del equipo ${l.equipo}${l.local ? ` · local ${l.local}` : ''}${l.pantalla ? ` · pantalla ${l.pantalla}` : ''} (yokup)` : ''}`);
   return ['Hola, quiero hacer este pedido en admira.shop:', '', ...items, '', `Total: ${totalTexto(imp)}`, '',
     linea('Nombre', datos.nombre), linea('Empresa', datos.empresa), linea('Email', datos.email), linea('Teléfono', datos.telefono),
     linea('Ciudad', datos.ciudad), linea('Comentarios', datos.comentarios)].filter((x) => x !== null).join('\n');

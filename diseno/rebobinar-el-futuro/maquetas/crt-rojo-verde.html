@@ -1,0 +1,181 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Maqueta CRT rojo a verde</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=VT323&display=swap" rel="stylesheet"><style>/* admira.shop · tienda del Xpacio — look and feel de admiranext.com (encargo #4291 · MorfeoMacMini · 25-09-2026) */
+@font-face { font-family: 'JetBrains Mono'; src: url('https://admira-shop.pages.dev/assets/shop/jetbrains-mono.woff2') format('woff2'); font-weight: 100 800; font-display: swap; }
+:root {
+  --bg: #1a1a2e; --bg-window: #252540; --bg-darker: #1e1e35; --border: #3a3a5c; --border-dashed: #5a5a8a;
+  --text: #e2e2f0; --text-dim: #8888aa; --text-muted: #6a6a8a; --accent: #e8a87c; --accent-bright: #f0c4a0;
+  --green: #7ec89b; --red: #e87c7c; --blue: #7caae8; --yellow: #e8d87c; --purple: #b88ce8; --cyan: #7ce8d8;
+  --n-pink: #FF3366; --n-yellow: #FFCC00; --n-green: #33FF99; --n-magenta: #FF33CC;
+  --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  --sans: 'Montserrat', 'Helvetica Neue', system-ui, sans-serif;
+  --radius: 12px; --gutter: clamp(16px, 4vw, 40px);
+}
+* { box-sizing: border-box; }
+html { background: var(--bg); color-scheme: dark; }
+body { margin: 0; min-height: 100vh; background: transparent; color: var(--text); font: 15px/1.6 var(--mono); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-bright); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+img, svg, video { max-width: 100%; }
+
+/* Fondo en vídeo, como la home de admiranext.com */
+.fondo { position: fixed; inset: 0; z-index: -2; overflow: hidden; }
+.fondo video { width: 100%; height: 100%; object-fit: cover; filter: blur(3px) saturate(.9); transform: scale(1.04); opacity: .55; }
+.fondo::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 20%, rgba(26,26,46,.35), rgba(26,26,46,.92) 70%); }
+@media (prefers-reduced-motion: reduce) { .fondo video { display: none; } }
+
+/* Barra superior */
+.barra { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 18px; padding: 14px var(--gutter);
+  background: rgba(26,26,46,.72); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(58,58,92,.6); }
+.marca { display: inline-flex; align-items: baseline; font: 800 20px/1 var(--mono); letter-spacing: -.01em; color: #fff; white-space: nowrap; }
+.marca .admira { color: #fff; }
+.marca .neon { display: inline-flex; margin-left: 1px; }
+.bln { font-weight: 800; }
+.bln-1 { color: var(--n-pink); text-shadow: 0 0 8px rgba(255,51,102,.7), 0 0 22px rgba(255,51,102,.45); }
+.bln-2 { color: var(--n-yellow); text-shadow: 0 0 8px rgba(255,204,0,.7), 0 0 22px rgba(255,204,0,.45); }
+.bln-3 { color: var(--n-green); text-shadow: 0 0 8px rgba(51,255,153,.7), 0 0 22px rgba(51,255,153,.45); }
+.bln-4 { color: var(--n-magenta); text-shadow: 0 0 8px rgba(255,51,204,.7), 0 0 22px rgba(255,51,204,.45); }
+.menu { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
+.menu a { color: var(--text); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 8px 10px; border-radius: 8px; }
+.menu a:hover, .menu a[aria-current="page"] { background: rgba(232,168,124,.12); color: var(--accent-bright); }
+.menu .carrito-link b { display: inline-grid; place-items: center; min-width: 20px; height: 20px; margin-left: 6px; padding: 0 5px; border-radius: 10px; background: var(--accent); color: var(--bg); font-size: 11px; }
+@media (max-width: 760px) { .barra { flex-wrap: wrap; gap: 8px; } .menu { width: 100%; justify-content: flex-start; margin-left: 0; } .menu a { padding: 6px 8px; font-size: 11px; } }
+
+main { width: min(1180px, 100%); margin: 0 auto; padding: 28px var(--gutter) 64px; }
+
+/* Ventana tipo terminal (admiranext.com) */
+.ventana { background: rgba(37,37,64,.94); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 24px 70px rgba(0,0,0,.45); margin: 0 0 28px; overflow: hidden; }
+.ventana > header { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: rgba(30,30,53,.9); }
+.puntos { display: inline-flex; gap: 7px; flex: none; }
+.puntos i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+.puntos i:nth-child(2) { background: #febc2e; } .puntos i:nth-child(3) { background: #28c840; }
+.ventana > header .ruta { color: var(--text-muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ventana > .cuerpo { padding: clamp(18px, 3vw, 32px); }
+
+.prompt { color: var(--text-dim); margin: 0 0 6px; }
+.prompt::before { content: '> '; color: var(--green); }
+.ok { color: var(--green); }
+h1, h2, h3 { font-family: var(--mono); letter-spacing: -.02em; line-height: 1.12; margin: 0 0 12px; }
+h1 { font-size: clamp(28px, 5vw, 52px); font-weight: 800; }
+h2 { font-size: clamp(22px, 3vw, 30px); font-weight: 800; }
+h3 { font-size: 17px; font-weight: 700; }
+.lead { color: var(--text-dim); font-size: clamp(15px, 1.6vw, 17px); max-width: 760px; }
+.acento { color: var(--accent); }
+
+.botones { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--border-dashed);
+  background: rgba(30,30,53,.8); color: var(--text); font: 700 13px/1 var(--mono); letter-spacing: .04em; cursor: pointer; }
+.btn:hover { border-color: var(--accent); color: var(--accent-bright); }
+.btn.primario { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.btn.primario:hover { background: var(--accent-bright); color: var(--bg); }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+
+/* Escena del Xpacio */
+.escena { position: relative; }
+.escena svg { display: block; width: 100%; height: auto; }
+.hot { cursor: pointer; }
+.hot .pieza { transition: filter .2s, opacity .2s; filter: drop-shadow(0 0 0 transparent); }
+.hot .etiqueta { opacity: 0; transition: opacity .2s; font: 700 15px var(--mono); pointer-events: none; }
+.hot .etiqueta-fondo { opacity: 0; transition: opacity .2s; }
+.hot:hover .pieza, .hot:focus .pieza { filter: drop-shadow(0 0 10px currentColor) brightness(1.35); }
+.hot:hover .etiqueta, .hot:focus .etiqueta, .hot:hover .etiqueta-fondo, .hot:focus .etiqueta-fondo { opacity: 1; }
+.escena .pulso { animation: pulso 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes pulso { 0%,100% { opacity: .35; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .escena .pulso { animation: none; } }
+.escena-pista { color: var(--text-muted); font-size: 13px; margin-top: 10px; }
+
+/* Tarjetas de categoría y de producto */
+.rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.tarjeta { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 18px; border-radius: var(--radius); border: 1px solid var(--border);
+  background: rgba(30,30,53,.86); color: var(--text); min-height: 150px; transition: border-color .2s, transform .2s; }
+a.tarjeta:hover { border-color: var(--c, var(--accent)); transform: translateY(-2px); color: var(--text); }
+.tarjeta .icono { font-size: 26px; color: var(--c, var(--accent)); text-shadow: 0 0 14px var(--c, var(--accent)); line-height: 1; }
+.tarjeta p { color: var(--text-dim); font-size: 13px; margin: 0; }
+.tarjeta .pie { margin-top: auto; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
+.chip { display: inline-block; padding: 2px 8px; border-radius: 999px; border: 1px dashed var(--border-dashed); color: var(--text-dim); font-size: 11px; }
+.chip.muestra { border-color: var(--yellow); color: var(--yellow); }
+.precio { color: var(--accent); font-weight: 700; }
+
+.filtros { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 20px; }
+.filtros a { padding: 7px 12px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-dim); font-size: 12px; font-weight: 700; }
+.filtros a[aria-current="true"] { border-color: var(--accent); color: var(--bg); background: var(--accent); }
+
+/* Ficha de producto */
+.ficha { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 28px; align-items: start; }
+@media (max-width: 820px) { .ficha { grid-template-columns: 1fr; } .ficha .visual { aspect-ratio: auto; height: 180px; font-size: 72px; } }
+.ficha .visual { aspect-ratio: 4 / 3; border-radius: var(--radius); border: 1px solid var(--border); background: radial-gradient(circle at 50% 40%, rgba(232,168,124,.14), rgba(30,30,53,.95) 70%);
+  display: grid; place-items: center; font-size: clamp(64px, 12vw, 120px); color: var(--c, var(--accent)); text-shadow: 0 0 30px var(--c, var(--accent)); }
+.reposicion { display: flex; gap: 10px; align-items: center; padding: 12px 14px; margin: 0 0 16px; border-radius: 10px; border: 1px solid var(--green); background: rgba(126,200,155,.1); color: var(--green); font-weight: 700; }
+.aviso { padding: 12px 14px; border-radius: 10px; border: 1px dashed var(--yellow); color: var(--yellow); background: rgba(232,216,124,.06); font-size: 13px; margin: 0 0 18px; }
+.datos { margin: 16px 0; display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; font-size: 14px; }
+.datos dt { color: var(--text-muted); } .datos dd { margin: 0; }
+.cantidad { width: 76px; min-height: 42px; border-radius: 10px; border: 1px solid var(--border-dashed); background: var(--bg-darker); color: var(--text); font: inherit; padding: 0 10px; }
+
+/* Formularios */
+form.campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
+form.campos .ancho { grid-column: 1 / -1; }
+@media (max-width: 640px) { form.campos { grid-template-columns: 1fr; } }
+label { display: grid; gap: 6px; font-size: 12px; color: var(--text-dim); letter-spacing: .04em; }
+input, select, textarea { width: 100%; min-height: 42px; border-radius: 10px; border: 1px solid var(--border-dashed); background: var(--bg-darker); color: var(--text); font: 14px/1.4 var(--mono); padding: 10px 12px; }
+textarea { min-height: 96px; resize: vertical; }
+.estado { min-height: 1.4em; color: var(--green); font-size: 13px; }
+
+.carrito-lista { width: 100%; border-collapse: collapse; margin: 0 0 18px; font-size: 14px; }
+.carrito-lista th, .carrito-lista td { text-align: left; padding: 10px 8px; border-bottom: 1px dashed var(--border); vertical-align: top; }
+.carrito-lista th { color: var(--text-muted); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.carrito-lista td small { display: block; color: var(--green); }
+
+.pie-web { border-top: 1px solid rgba(58,58,92,.6); padding: 26px var(--gutter) 40px; color: var(--text-muted); font-size: 12px; display: flex; flex-wrap: wrap; gap: 10px 22px; justify-content: center; background: rgba(26,26,46,.8); }
+.pie-web a { color: var(--text-dim); }
+.dos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 760px) { .dos { grid-template-columns: 1fr; } }
+.oculto, [hidden] { display: none !important; }
+
+/* Ficha estilo gran superficie (#4293): foto, precio grande, características, opciones AdmiraXperience y Véndenos el tuyo */
+.tarjeta .foto { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 8px; margin-bottom: 6px; background: var(--bg-darker); }
+.ficha .visual { display: block; aspect-ratio: auto; padding: 0; overflow: hidden; }
+.ficha .visual img { display: block; width: 100%; height: auto; }
+@media (max-width: 820px) { .ficha .visual { height: auto; } }
+.marca-chip { color: var(--text-muted); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; margin: 0 0 6px; }
+.compra { margin: 18px 0 22px; padding: 18px; border: 1px solid var(--border); border-radius: var(--radius); background: rgba(30,30,53,.9); }
+.precio-grande { margin: 0; font-size: clamp(34px, 5vw, 48px); font-weight: 800; line-height: 1; color: var(--accent-bright); letter-spacing: -.02em; }
+.iva { margin: 6px 0 14px; color: var(--text-muted); font-size: 12px; }
+.opciones { border: 1px dashed var(--border-dashed); border-radius: 10px; padding: 10px 12px; margin: 0 0 4px; display: grid; gap: 8px; }
+.opciones legend { padding: 0 6px; color: var(--text-dim); font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+.opcion { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; font-size: 13px; color: var(--text); cursor: pointer; }
+.opcion input { width: 18px; height: 18px; min-height: 0; accent-color: var(--accent); }
+.opcion small { display: block; color: var(--text-muted); font-size: 11px; }
+.btn.grande { min-height: 48px; font-size: 14px; flex: 1 1 200px; justify-content: center; }
+h2.sub { font-size: 17px; margin-top: 8px; }
+.caracteristicas { margin: 0 0 18px; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; }
+.caracteristicas li::marker { color: var(--accent); }
+.vende-bloque { margin-top: 26px; padding: 18px; border-radius: var(--radius); border: 1px solid var(--green); background: rgba(126,200,155,.07); }
+.vende-bloque h2 { font-size: 20px; color: var(--green); }
+.vende-bloque p { color: var(--text-dim); margin: 0 0 12px; }
+.carrito-lista tfoot th, .carrito-lista tfoot td { border-bottom: 0; padding-top: 14px; font-size: 15px; }
+.carrito-lista .total { font-size: 18px; }
+@media (max-width: 640px) { .carrito-lista { font-size: 12px; } .carrito-lista th, .carrito-lista td { padding: 8px 4px; } }
+</style><link rel="stylesheet" href="../shop-retro.css"></head><style>
+.escenario{display:grid;grid-template-columns:1fr auto 1fr;gap:28px;align-items:center;padding:48px 56px}
+.tubo{position:relative;padding:26px 26px 54px;border-radius:30px/34px;background:linear-gradient(150deg,#55557f,#2a2a47 55%,#17172a);box-shadow:var(--bisel),0 30px 60px rgba(0,0,0,.55)}
+.tubo .pant{position:relative;aspect-ratio:4/3;border-radius:22px/28px;display:grid;place-items:center;text-align:center;overflow:hidden}
+.tubo .pant::after{content:'';position:absolute;inset:0;background:var(--scan),radial-gradient(ellipse at 50% 45%,transparent 50%,rgba(0,0,0,.6));pointer-events:none}
+.tubo.r .pant{background:radial-gradient(ellipse at 50% 45%,#5a0b22,#1c0610 75%);box-shadow:inset 0 0 50px rgba(255,51,102,.35)}
+.tubo.v .pant{background:radial-gradient(ellipse at 50% 45%,#0b4a30,#04160f 75%);box-shadow:inset 0 0 50px rgba(51,255,153,.3)}
+.big{font:400 64px/1 var(--f-dato);letter-spacing:.04em}.small{font:400 26px/1.2 var(--f-dato);letter-spacing:.06em;margin-top:10px}
+.r .big,.r .small{color:#ff5c7a;text-shadow:var(--halo-alerta)} .v .big,.v .small{color:#33FF99;text-shadow:var(--halo-ok)}
+.tubo .botonera{position:absolute;left:30px;right:30px;bottom:16px;display:flex;justify-content:space-between;align-items:center;font:400 18px var(--f-dato);color:#9a9abb;letter-spacing:.1em}
+.tubo .botonera i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.r .botonera i{background:#FF3366;box-shadow:var(--halo-alerta)} .v .botonera i{background:#33FF99;box-shadow:var(--halo-ok)}
+.flecha{text-align:center;font:400 22px/1.3 var(--f-dato);color:#a9a9c8;letter-spacing:.08em}
+.flecha .btn{margin:14px 0}
+.titulo{text-align:center;padding-top:40px}
+</style><body><div class="fondo" aria-hidden="true"><video muted playsinline poster="https://admira-shop.pages.dev/assets/shop/robots.jpg"></video></div>
+<div class="horizonte" aria-hidden="true"><div class="sol"></div><div class="suelo"></div></div><div class="titulo"><p class="episodio" style="justify-content:center">Episodio III · La pantalla en rojo</p><h1 class="cromado">Del rojo al verde<br>en un pedido.</h1></div>
+<div class="escenario">
+<div class="tubo r"><div class="pant"><div><div class="big">SIN SEÑAL</div><div class="small">EQUIPO EJEMPLO-01<br>MENÚ BOARD IZQUIERDA</div></div></div><div class="botonera"><span>ADMIRA · XPACIO</span><i></i></div></div>
+<div class="flecha">yokup.com<br><a class="btn reponer" href="#">Reponer</a><br>admira.shop<br>▶ ▶ ▶</div>
+<div class="tubo v"><div class="pant"><div><div class="big">EN LÍNEA</div><div class="small">EQUIPO EJEMPLO-01<br>XPACIO OK ✓</div></div></div><div class="botonera"><span>ADMIRA · XPACIO</span><i></i></div></div>
+</div></body></html>

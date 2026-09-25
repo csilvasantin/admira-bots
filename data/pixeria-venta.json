@@ -11,19 +11,28 @@
     "enVenta": true,
     "precioEUR": null
   },
-  "tipos": ["furni"],
+  "tipos": [
+    "furni"
+  ],
   "assets": {
     "1790370186236-n4eyaq": {
       "titulo": "Cafetera de la cafetería de Alsea",
       "texto": "Viene de la sala que diseñamos para la cafetería de Alsea, donde está detrás de la barra. Es la pieza que da sentido al mostrador y en la que el cliente se fija antes que en ninguna otra. Es un modelo 3D con sus medidas reales (94 × 56,8 × 50 cm), listo para colocarlo en tu propio Xpacio y editarlo en Pixeria.",
       "foto": "https://api.yokup.com/media/fleet/c7e139c8a7551532.png",
       "precioEUR": null,
-      "destacado": 1
+      "destacado": 1,
+      "wallapopUrl": null
     },
     "1790368707714-jwgkfk": {
       "titulo": "Silla azul de la cafetería de Alsea · 95 cm",
       "precioEUR": null,
-      "destacado": 2
+      "destacado": 2,
+      "wallapopUrl": null
     }
+  },
+  "wallapop": {
+    "nota": "Muebles de segunda mano a la venta también en Wallapop (encargo #4400). La ficha tiene un botón «Vender en Wallapop» que prepara el anuncio para copiarlo (título, descripción, precio, categoría, estado y fotos) y abre el formulario de subida de Wallapop. Wallapop no tiene enlace oficial con datos precargados; su Connect API exige credenciales de integrador. Cuando el anuncio esté publicado, pega su enlace en wallapopUrl del mueble y la ficha enseñará «Ver en Wallapop». Si el texto de la ficha no sirve para el anuncio (habla del modelo 3D), pon el del mueble físico en textoWallapop.",
+    "categoria": "Hogar y jardín > Muebles",
+    "estado": "De segunda mano"
   }
 }

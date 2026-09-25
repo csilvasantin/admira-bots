@@ -63,3 +63,24 @@ dd{margin:0}
   .ficha{grid-template-columns:1fr}
   model-viewer{height:280px}
 }
+.segunda-mano{margin-top:14px;border:1px dashed var(--line);border-radius:var(--radius);padding:14px 18px;display:flex;flex-direction:column;gap:8px}
+.segunda-mano .eyebrow{margin:0}
+.vender-wallapop,.ver-wallapop{min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius);font:700 1rem Georgia,serif;cursor:pointer;text-decoration:none}
+.vender-wallapop{background:transparent;color:#13c1ac;border:1px solid #13c1ac}
+.ver-wallapop{background:#13c1ac;color:#062a25;border:0}
+.vender-wallapop:hover,.ver-wallapop:hover{filter:brightness(1.15)}
+dialog.wallapop{width:min(640px,calc(100% - 32px));max-height:calc(100% - 32px);background:#111113;color:var(--text);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px}
+dialog.wallapop::backdrop{background:rgba(0,0,0,.7)}
+.wp-cab{display:flex;justify-content:space-between;align-items:center;margin:0 0 6px}
+.wp-cab h2{margin:0;font-size:1.3rem}
+.cerrar{background:none;border:0;color:var(--muted);font-size:1.6rem;line-height:1;cursor:pointer}
+.campo{margin-top:14px}
+.campo-cab{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;color:var(--muted);font-size:.85rem}
+.campo input,.campo textarea{width:100%;background:#1a1a1d;color:var(--text);border:1px solid var(--line);border-radius:var(--radius);padding:8px 10px;font:.95rem/1.45 Georgia,serif;resize:vertical}
+.copiar{background:none;border:1px solid var(--line);color:var(--text);border-radius:var(--radius);padding:4px 10px;font:.8rem ui-monospace,monospace;cursor:pointer}
+.copiar:hover{border-color:#13c1ac;color:#13c1ac}
+.wp-fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.wp-foto{position:relative;padding:0;border:1px solid var(--line);border-radius:var(--radius);background:#dfe3df;overflow:hidden;cursor:pointer;aspect-ratio:4/3}
+.wp-foto img{width:100%;height:100%;object-fit:cover;display:block}
+.wp-foto span{position:absolute;inset:auto 0 0 0;background:rgba(0,0,0,.65);color:#fff;font:.75rem ui-monospace,monospace;padding:4px}
+.wp-pie{margin:16px 0 0;font-size:.85rem}

@@ -93,3 +93,19 @@ dialog.wallapop::backdrop{background:rgba(0,0,0,.7)}
 .publicar-ebay-ficha:hover,.publicar-ebay:hover{filter:brightness(1.15)}
 .eb-dato{margin:0;white-space:pre-line}
 .publicar-ebay[hidden]{display:none}
+.secciones{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}
+.secciones a{text-decoration:none;padding:8px 12px;border:1px solid var(--line);border-radius:var(--radius);font-size:.9rem}
+.secciones a small{color:var(--muted);font-family:ui-monospace,monospace;font-size:.75rem;margin-left:4px}
+.secciones a.foco{border-color:var(--orange)}
+.secciones a[aria-current="page"]{border-color:var(--cyan);color:var(--cyan)}
+.tarjeta.libro .foto{aspect-ratio:3/4;background:#2a2118}
+.tarjeta.libro .foto img{object-fit:contain}
+.libro-botones{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.libro-botones a{font:.75rem ui-monospace,monospace;padding:5px 8px;border:1px solid var(--line);border-radius:var(--radius);text-decoration:none}
+.libro-botones a:first-child{border-color:var(--cyan);color:var(--cyan)}
+.libro-botones a:nth-child(2){border-color:#13c1ac;color:#13c1ac}
+.libro-botones a:nth-child(3){border-color:#f5af02;color:#f5af02}
+a.comprar{display:flex;align-items:center;justify-content:center;text-decoration:none}
+a.publicar-ebay-ficha{text-decoration:none}
+.autor{margin:-6px 0 14px;color:var(--text);font-style:italic}
+.modelo-3d{margin:18px 0 8px}

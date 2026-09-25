@@ -1,0 +1,141 @@
+{
+  "schema": "admira.shop.libros-estanteria/1",
+  "nota": "Libros reales de la estantería de la Cafetería de los Xpacios (Cafetería Alsea) a la venta en admira.shop/pixeria/?seccion=libros (encargo #4407 · FLT-101053). Salen de pixeria.com/assets/xpaces/libros/estanteria-libros.json (FLT-101048) y de los GLB pixeria.book/1 del stock. Nuevo = Casa del Libro: ficha exacta si está comprobada; si no, su búsqueda. Segunda mano = búsqueda en Wallapop y en eBay (usado), sin cuentas ni claves. ISBN = el de la edición que se vende (castellano si existe); la portada de la estantería es la de Blinkist, no fija edición. Un libro no identificable va con identificado:false, titulo:null y la etiqueta «sin identificar»: nunca se inventa título ni ISBN.",
+  "generado": "2026-09-26",
+  "xpacio": "Cafetería Alsea",
+  "estanteria": "estanteria-libros · 3 huecos · 6 libros (5 de pie arriba, el libro del día de cara en el central)",
+  "libros": [
+    {
+      "slug": "the-hero-with-a-thousand-faces-en",
+      "orden_estanteria": 1,
+      "identificado": true,
+      "titulo": "The Hero with a Thousand Faces",
+      "titulo_es": "El héroe de las mil caras",
+      "autor": "Joseph Campbell",
+      "isbn": "9788412213003",
+      "edicion": "El héroe de las mil caras · Ediciones Atalanta, 2020 · tapa blanda · castellano",
+      "isbn_fuente": "ficha de Casa del Libro (comprobada 2026-09-26)",
+      "portada": "https://www.pixeria.com/assets/xpaces/libros/portadas/the-hero-with-a-thousand-faces-en.jpg",
+      "modelo_pixeria": "1790374898228-sylcvc",
+      "comprar_nuevo": {
+        "tienda": "Casa del Libro",
+        "tipo": "ficha",
+        "url": "https://www.casadellibro.com/libro-el-heroe-de-las-mil-caras/9788412213003/11804209"
+      },
+      "segunda_mano": {
+        "wallapop": "https://es.wallapop.com/app/search?keywords=El+h%C3%A9roe+de+las+mil+caras+Joseph+Campbell",
+        "ebay": "https://www.ebay.es/sch/i.html?_nkw=9788412213003&LH_ItemCondition=3000"
+      }
+    },
+    {
+      "slug": "sapiens-en",
+      "orden_estanteria": 2,
+      "identificado": true,
+      "titulo": "Sapiens: A Brief History of Humankind",
+      "titulo_es": "Sapiens. De animales a dioses",
+      "autor": "Yuval Noah Harari",
+      "isbn": "9788419399717",
+      "edicion": "Sapiens. De animales a dioses · Debate, 2023 · tapa dura · castellano",
+      "isbn_fuente": "ficha de Casa del Libro (comprobada 2026-09-26)",
+      "portada": "https://www.pixeria.com/assets/xpaces/libros/portadas/sapiens-en.jpg",
+      "modelo_pixeria": "1790374957269-cqttzk",
+      "comprar_nuevo": {
+        "tienda": "Casa del Libro",
+        "tipo": "ficha",
+        "url": "https://www.casadellibro.com/libro-sapiens-de-animales-a-dioses/9788419399717/13931313"
+      },
+      "segunda_mano": {
+        "wallapop": "https://es.wallapop.com/app/search?keywords=Sapiens.+De+animales+a+dioses+Yuval+Noah+Harari",
+        "ebay": "https://www.ebay.es/sch/i.html?_nkw=9788419399717&LH_ItemCondition=3000"
+      }
+    },
+    {
+      "slug": "creatividad-sa-es",
+      "orden_estanteria": 3,
+      "identificado": true,
+      "titulo": "Creatividad, S.A.",
+      "titulo_es": "Creatividad, S.A.",
+      "autor": "Ed Catmull, Amy Wallace",
+      "isbn": "9788418053245",
+      "edicion": "Creatividad, S.A. (nueva edición ampliada y actualizada) · Conecta, 2024 · tapa blanda · castellano",
+      "isbn_fuente": "ficha de Casa del Libro (comprobada 2026-09-26)",
+      "portada": "https://www.pixeria.com/assets/xpaces/libros/portadas/creatividad-sa-es.jpg",
+      "modelo_pixeria": "1790375013351-f6ip4j",
+      "comprar_nuevo": {
+        "tienda": "Casa del Libro",
+        "tipo": "ficha",
+        "url": "https://www.casadellibro.com/libro-creatividad-sa-nueva-edicion-ampliada-y-actualizada/9788418053245/15952450"
+      },
+      "segunda_mano": {
+        "wallapop": "https://es.wallapop.com/app/search?keywords=Creatividad%2C+S.A.+Ed+Catmull",
+        "ebay": "https://www.ebay.es/sch/i.html?_nkw=9788418053245&LH_ItemCondition=3000"
+      }
+    },
+    {
+      "slug": "the-impossible-factory-en",
+      "orden_estanteria": 4,
+      "identificado": true,
+      "titulo": "The Impossible Factory",
+      "titulo_es": null,
+      "autor": "Josh Dean",
+      "isbn": "9781524745516",
+      "edicion": "The Impossible Factory · Dutton, 2026 · tapa dura en inglés (sin edición en castellano)",
+      "isbn_fuente": "penguinrandomhouse.com/books/609710",
+      "portada": "https://www.pixeria.com/assets/xpaces/libros/portadas/the-impossible-factory-en.jpg",
+      "modelo_pixeria": "1790375069695-idmmd3",
+      "comprar_nuevo": {
+        "tienda": "Casa del Libro",
+        "tipo": "busqueda",
+        "url": "https://www.casadellibro.com/busqueda-generica?busqueda=The+Impossible+Factory"
+      },
+      "segunda_mano": {
+        "wallapop": "https://es.wallapop.com/app/search?keywords=The+Impossible+Factory+Josh+Dean",
+        "ebay": "https://www.ebay.es/sch/i.html?_nkw=9781524745516&LH_ItemCondition=3000"
+      }
+    },
+    {
+      "slug": "co-intelligence-en",
+      "orden_estanteria": 5,
+      "identificado": true,
+      "titulo": "Co-Intelligence: Living and Working with AI",
+      "titulo_es": "Cointeligencia. Vivir y trabajar con la IA",
+      "autor": "Ethan Mollick",
+      "isbn": "9788418053214",
+      "edicion": "Cointeligencia. Vivir y trabajar con la IA · Conecta, 2024 · tapa blanda · castellano",
+      "isbn_fuente": "ficha de Casa del Libro (comprobada 2026-09-26)",
+      "portada": "https://www.pixeria.com/assets/xpaces/libros/portadas/co-intelligence-en.jpg",
+      "modelo_pixeria": "1790375124838-wgsi5x",
+      "comprar_nuevo": {
+        "tienda": "Casa del Libro",
+        "tipo": "ficha",
+        "url": "https://www.casadellibro.com/libro-cointeligencia/9788418053214/16155367"
+      },
+      "segunda_mano": {
+        "wallapop": "https://es.wallapop.com/app/search?keywords=Cointeligencia.+Vivir+y+trabajar+con+la+IA+Ethan+Mollick",
+        "ebay": "https://www.ebay.es/sch/i.html?_nkw=9788418053214&LH_ItemCondition=3000"
+      }
+    },
+    {
+      "slug": "creative-confidence-en",
+      "orden_estanteria": 6,
+      "identificado": true,
+      "titulo": "Creative Confidence",
+      "titulo_es": null,
+      "autor": "Tom Kelley, David Kelley",
+      "isbn": "9780385349376",
+      "edicion": "Creative Confidence · Crown · eBook en inglés (sin edición en castellano; es la que vende Casa del Libro). Tapa en inglés: 9780385349369",
+      "isbn_fuente": "ficha de Casa del Libro (comprobada 2026-09-26)",
+      "portada": "https://www.pixeria.com/assets/xpaces/libros/portadas/creative-confidence-en.jpg",
+      "modelo_pixeria": "1790375180840-lnodeq",
+      "comprar_nuevo": {
+        "tienda": "Casa del Libro",
+        "tipo": "ficha",
+        "url": "https://www.casadellibro.com/ebook-creative-confidence-ebook/9780385349376/17352716"
+      },
+      "segunda_mano": {
+        "wallapop": "https://es.wallapop.com/app/search?keywords=Creative+Confidence+Tom+Kelley",
+        "ebay": "https://www.ebay.es/sch/i.html?_nkw=9780385349376&LH_ItemCondition=3000"
+      }
+    }
+  ]
+}

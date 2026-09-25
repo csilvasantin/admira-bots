@@ -23,11 +23,12 @@ async function catalogo() {
   return CAT;
 }
 const categoria = (id) => CAT.categorias.find((c) => c.id === id);
-const urlFicha = (p) => `/p/${p.modelo}/`;
+// Si se llega desde yokup, la reposición viaja también a las fichas que se elijan desde un listado.
+const urlFicha = (p, repo = null) => `/p/${p.modelo}/` + (repo ? `?origen=yokup&equipo=${encodeURIComponent(repo.equipo)}` : '');
 
-function tarjetaProducto(p) {
+function tarjetaProducto(p, repo = null) {
   const c = categoria(p.categoria);
-  const t = el('a', { class: 'tarjeta', href: urlFicha(p), style: `--c:${c.color}` },
+  const t = el('a', { class: 'tarjeta', href: urlFicha(p, repo), style: `--c:${c.color}` },
     el('span', { class: 'icono', text: c.icono, 'aria-hidden': 'true' }),
     el('h3', { text: p.nombre }),
     el('p', { text: p.resumen }),
@@ -46,18 +47,19 @@ async function home() {
   $('#categorias').replaceChildren(...CAT.categorias.map(tarjetaCategoria));
 }
 
-function pintarCatalogo(destino, cat, motivo) {
+function pintarCatalogo(destino, cat, motivo, repo = null) {
   const filtros = el('nav', { class: 'filtros', 'aria-label': 'Categorías' },
     el('a', { href: '/catalogo/', 'aria-current': cat ? 'false' : 'true', text: 'Todo' }),
     ...CAT.categorias.map((c) => el('a', { href: `/catalogo/?cat=${c.id}`, 'aria-current': c.id === cat ? 'true' : 'false', text: c.nombre })));
   const c = cat && categoria(cat);
   destino.replaceChildren(
+    ...(repo ? [el('p', { class: 'reposicion', role: 'note' }, el('span', { text: '↻', 'aria-hidden': 'true' }), el('span', { text: `${repo.texto}: elige el modelo` }))] : []),
     ...(motivo ? [el('p', { class: 'aviso', text: motivo })] : []),
     el('p', { class: 'prompt', text: `ls /xpacio/${cat || '*'}` }),
     el('h1', { text: c ? c.nombre : 'Todo para tu Xpacio' }),
     el('p', { class: 'lead', text: c ? c.descripcion : 'Pantallas, players, sonido, aromas, red, cámaras, kioscos, robots y servicios.' }),
     filtros,
-    el('div', { class: 'rejilla' }, ...productosDe(CAT, c ? cat : null).map(tarjetaProducto)),
+    el('div', { class: 'rejilla' }, ...productosDe(CAT, c ? cat : null).map((p) => tarjetaProducto(p, repo))),
     el('p', { class: 'escena-pista', text: 'Precios bajo consulta. Los productos marcados «muestra» son ejemplos: te confirmamos disponibilidad y ficha técnica al pedir presupuesto.' }));
 }
 async function paginaCatalogo() {
@@ -71,9 +73,9 @@ async function ficha() {
   await catalogo();
   const vista = $('#vista');
   const r = resolverFicha(CAT, modeloDeRuta(location.pathname));
-  if (r.tipo === 'catalogo') { pintarCatalogo(vista, r.categoria, r.motivo); document.title = 'Pantallas · admira.shop'; return; }
-  const { producto: p, categoria: c } = r;
   const repo = reposicion(location.search);
+  if (r.tipo === 'catalogo') { pintarCatalogo(vista, r.categoria, r.motivo, repo); document.title = 'Pantallas · admira.shop'; return; }
+  const { producto: p, categoria: c } = r;
   document.title = `${p.nombre} · admira.shop`;
   const cantidad = el('input', { class: 'cantidad', type: 'number', min: '1', max: '999', value: '1', 'aria-label': 'Cantidad' });
   const estado = el('p', { class: 'estado', role: 'status' });
@@ -91,7 +93,7 @@ async function ficha() {
     ...(p.url ? [el('a', { class: 'btn', href: p.url, text: p.categoria === 'robots' ? 'Ver ficha completa del robot' : 'Ir al servicio' })] : []),
     el('a', { class: 'btn', href: '/vende/', text: 'Véndenos el tuyo usado' }));
   vista.replaceChildren(
-    el('p', { class: 'prompt' }, 'cat ', el('span', { text: urlFicha(p) })),
+    el('p', { class: 'prompt' }, 'cat ', el('span', { text: `/p/${p.modelo}/` })),
     ...(repo ? [el('p', { class: 'reposicion', role: 'note' }, el('span', { text: '↻', 'aria-hidden': 'true' }), el('span', { text: repo.texto }))] : []),
     el('div', { class: 'ficha' },
       el('div', { class: 'visual', style: `--c:${c.color}`, 'aria-hidden': 'true', text: c.icono }),

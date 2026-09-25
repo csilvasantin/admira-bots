@@ -7,10 +7,10 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, copyFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { validarCatalogo } from '../assets/shop/core.mjs';
+import { validarCatalogo, precioTexto } from '../assets/shop/core.mjs';
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
-const VERSION = process.env.SHOP_VERSION || 'v.26.09.25.r1';
+const VERSION = process.env.SHOP_VERSION || 'v.26.09.25.r2';
 const DOMINIO = 'https://admira.shop';
 const cat = JSON.parse(readFileSync(join(RAIZ, 'data/catalogo.json'), 'utf8'));
 const errores = validarCatalogo(cat);
@@ -67,7 +67,7 @@ if (!existsSync(join(RAIZ, 'robots.html'))) copyFileSync(join(RAIZ, 'index.html'
 
 // ── Home ──
 escribir('index.html', pagina({ page: 'home', ruta: '/', titulo: 'ADmira.shop · Todo para tu Xpacio: compra, renueva y véndenos tu equipo',
-  descripcion: 'Pantallas, players, sonido, aromas, wifi, cámaras, kioscos, robots y servicios para el Xpacio AdmiraXperience. Compra, pide presupuesto o véndenos tu equipo usado.',
+  descripcion: 'Pantallas, players, sonido, aromas, wifi, cámaras, kioscos, robots y servicios para el Xpacio AdmiraXperience. Compra con precios cerrados o véndenos tu equipo usado.',
   main: [
     ventana('user@admira.shop ~ %', `<p class="prompt">boot xpacio --tienda</p><p class="prompt">montando pantallas, sonido, aroma y red… <span class="ok">ok</span></p>
 <h1>Todo lo que hace vivo tu <span class="acento">Xpacio</span>.</h1>
@@ -85,22 +85,22 @@ escribir('catalogo/index.html', pagina({ page: 'catalogo', ruta: '/catalogo/', t
 
 // ── Fichas: una estática por modelo + /p/ + 404.html (mismo esqueleto; shop.js decide qué pintar) ──
 const fichaHtml = (p) => pagina({ page: 'ficha', ruta: p ? `/p/${p.modelo}/` : '/p/', titulo: p ? `${p.nombre} · ADmira.shop` : 'Pantallas · ADmira.shop',
-  descripcion: p ? `${p.nombre}: ${p.resumen} Pide presupuesto en admira.shop.` : 'Pantallas profesionales para tu Xpacio.',
-  main: ventana(p ? `cat /p/${esc(p.modelo)}/` : 'ls /p/', `<div id="vista"><noscript>${p ? `<h1>${esc(p.nombre)}</h1><p>${esc(p.resumen)}</p><p>Consultar precio: <a href="mailto:${cat.contacto}">${cat.contacto}</a></p>` : '<p>Activa JavaScript para ver el catálogo.</p>'}</noscript><p class="lead">Cargando…</p></div>`) });
+  descripcion: p ? `${p.nombre}: ${p.resumen} ${precioTexto(p)} IVA incluido en admira.shop.` : 'Pantallas profesionales para tu Xpacio.',
+  main: ventana(p ? `cat /p/${esc(p.modelo)}/` : 'ls /p/', `<div id="vista"><noscript>${p ? `<h1>${esc(p.nombre)}</h1><p>${esc(p.resumen)}</p><p>${esc(precioTexto(p))}${p.precio ? ' (IVA incluido)' : ''} · pedidos: <a href="mailto:${cat.contacto}">${cat.contacto}</a></p>` : '<p>Activa JavaScript para ver el catálogo.</p>'}</noscript><p class="lead">Cargando…</p></div>`) });
 for (const p of cat.productos) escribir(`p/${p.modelo}/index.html`, fichaHtml(p));
 escribir('p/index.html', fichaHtml(null));
 escribir('404.html', fichaHtml(null));
 
 // ── Carrito ──
-escribir('carrito/index.html', pagina({ page: 'carrito', ruta: '/carrito/', titulo: 'Carrito · ADmira.shop', descripcion: 'Tu petición de pedido o presupuesto para el Xpacio.',
-  main: ventana('cat ~/carrito', `<h1>Tu carrito</h1><p class="lead">Aún no cobramos en la web: envías la petición y te respondemos con presupuesto, disponibilidad y plazos.</p>
+escribir('carrito/index.html', pagina({ page: 'carrito', ruta: '/carrito/', titulo: 'Carrito · ADmira.shop', descripcion: 'Tu pedido para el Xpacio, con importes e IVA incluido.',
+  main: ventana('cat ~/carrito', `<h1>Tu carrito</h1><p class="lead">Precios en euros, IVA incluido. Aún no cobramos en la web: nos envías el pedido y te confirmamos disponibilidad, plazos y forma de pago.</p>
 <div id="lista"></div><p id="vacio" class="aviso" hidden>Tu carrito está vacío. <a href="/catalogo/">Ver catálogo →</a></p>
 <form id="pedido" class="campos" hidden>
 <label>Nombre<input name="nombre" autocomplete="name" required></label><label>Empresa<input name="empresa" autocomplete="organization"></label>
 <label>Email<input name="email" type="email" autocomplete="email" required></label><label>Teléfono<input name="telefono" type="tel" autocomplete="tel"></label>
 <label class="ancho">Ciudad o dirección de entrega<input name="ciudad" autocomplete="address-level2"></label>
 <label class="ancho">Comentarios<textarea name="comentarios" placeholder="Plazos, instalación, número de locales…"></textarea></label>
-<div class="botones ancho"><button class="btn primario">Enviar petición de presupuesto</button><button class="btn" type="button" id="copiar-pedido">Copiar petición</button></div>
+<div class="botones ancho"><button class="btn primario">Enviar pedido</button><button class="btn" type="button" id="copiar-pedido">Copiar pedido</button></div>
 <p id="estado-pedido" class="estado ancho" role="status"></p></form>`) }));
 
 // ── Véndenos tu equipo ──

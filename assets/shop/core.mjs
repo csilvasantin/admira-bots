@@ -5,7 +5,8 @@ export const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 export const CATEGORIA_POR_DEFECTO = 'pantallas';
 const EQUIPO = /^[\w.:@-]{1,80}$/;
 
-/** Errores del contrato del catálogo (vacío = válido). Un precio solo vale con su fuente: no se inventan precios. */
+/** Errores del contrato del catálogo (vacío = válido). Todo producto lleva precio (€, IVA incluido) y su precio_referencia
+ *  (tienda usada o 'estimado') para poder revisarlo (#4293); una ficha sin foto ni características no se publica. */
 export function validarCatalogo(cat) {
   const errores = [];
   const cats = new Set((cat?.categorias || []).map((c) => c.id));
@@ -18,8 +19,11 @@ export function validarCatalogo(cat) {
     vistos.add(id);
     if (!cats.has(p.categoria)) errores.push(`${id}: categoría desconocida ${p.categoria}`);
     if (typeof p.muestra !== 'boolean') errores.push(`${id}: falta marcar muestra true/false`);
-    if (p.precio !== null && !(p.precio && Number.isFinite(p.precio.importe) && typeof p.precio.fuente === 'string' && p.precio.fuente.trim()))
-      errores.push(`${id}: precio sin fuente (usa null = «Consultar precio»)`);
+    if (!(Number.isFinite(p.precio) && p.precio >= 0)) errores.push(`${id}: falta el precio en euros (IVA incluido)`);
+    if (!(typeof p.precio_referencia === 'string' && p.precio_referencia.trim())) errores.push(`${id}: precio sin precio_referencia (tienda usada o 'estimado')`);
+    if (p.periodo != null && p.periodo !== 'mes') errores.push(`${id}: periodo desconocido ${p.periodo}`);
+    if (!(Array.isArray(p.caracteristicas) && p.caracteristicas.length >= 2)) errores.push(`${id}: faltan características clave`);
+    if (typeof p.foto !== 'string' || !p.foto.startsWith('/')) errores.push(`${id}: falta la foto`);
   }
   return errores;
 }
@@ -48,8 +52,13 @@ export function reposicion(search) {
   return { origen: 'yokup', equipo, texto: `Reposición para el equipo ${equipo}` };
 }
 
+const EUR = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2, minimumFractionDigits: 0, useGrouping: 'always' });
+export const euros = (n) => EUR.format(Math.round((Number(n) || 0) * 100) / 100);
+/** '1.290 €', '29 €/mes' o 'Gratis'. */
 export function precioTexto(p) {
-  return p && p.precio ? `${p.precio.importe.toLocaleString('es-ES')} € · ${p.precio.fuente}` : 'Consultar precio';
+  if (!p || !Number.isFinite(p.precio)) return '—';
+  if (p.precio === 0) return 'Gratis';
+  return euros(p.precio) + (p.periodo === 'mes' ? '/mes' : '');
 }
 
 export function productosDe(cat, categoria) {
@@ -67,13 +76,30 @@ export function carritoAnadir(carrito, modelo, cantidad = 1, equipo = null) {
 }
 export function carritoQuitar(carrito, indice) { return (carrito || []).filter((_, i) => i !== indice); }
 export function carritoTotal(carrito) { return (carrito || []).reduce((s, l) => s + (l.cantidad || 0), 0); }
+/** Importes del carrito (IVA incluido): lo que se paga una vez y la cuota mensual de los servicios, por separado. */
+export function carritoImportes(carrito, cat) {
+  const r = { unico: 0, mensual: 0, lineas: [] };
+  for (const l of carrito || []) {
+    const p = (cat?.productos || []).find((x) => x.modelo === l.modelo);
+    const subtotal = p && Number.isFinite(p.precio) ? p.precio * (l.cantidad || 0) : 0;
+    r.lineas.push({ ...l, precio: p ? p.precio : null, periodo: p?.periodo || null, subtotal });
+    if (p?.periodo === 'mes') r.mensual += subtotal; else r.unico += subtotal;
+  }
+  r.unico = Math.round(r.unico * 100) / 100; r.mensual = Math.round(r.mensual * 100) / 100;
+  return r;
+}
+/** Lo que sale en el pie del carrito: «Total 2.580 €» y, si hay servicios mensuales, «+ 38 €/mes». */
+export function totalTexto(imp) {
+  return euros(imp.unico) + (imp.mensual ? ` + ${euros(imp.mensual)}/mes` : '') + ' (IVA incluido)';
+}
 
 // ── Peticiones por correo (sin pasarela de pago todavía) ─────────────────────────────────────────────────
 const linea = (k, v) => (v ? `${k}: ${v}` : null);
 export function textoPedido(carrito, cat, datos = {}) {
   const nombre = (m) => (cat?.productos || []).find((p) => p.modelo === m)?.nombre || m;
-  const items = (carrito || []).map((l) => `- ${l.cantidad} × ${nombre(l.modelo)} (${l.modelo})${l.equipo ? ` · reposición del equipo ${l.equipo} (yokup)` : ''}`);
-  return ['Hola, quiero pedir presupuesto en admira.shop:', '', ...items, '',
+  const imp = carritoImportes(carrito, cat);
+  const items = imp.lineas.map((l) => `- ${l.cantidad} × ${nombre(l.modelo)} (${l.modelo}) · ${euros(l.subtotal)}${l.periodo === 'mes' ? '/mes' : ''}${l.equipo ? ` · reposición del equipo ${l.equipo} (yokup)` : ''}`);
+  return ['Hola, quiero hacer este pedido en admira.shop:', '', ...items, '', `Total: ${totalTexto(imp)}`, '',
     linea('Nombre', datos.nombre), linea('Empresa', datos.empresa), linea('Email', datos.email), linea('Teléfono', datos.telefono),
     linea('Ciudad', datos.ciudad), linea('Comentarios', datos.comentarios)].filter((x) => x !== null).join('\n');
 }

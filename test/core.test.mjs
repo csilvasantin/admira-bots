@@ -1,21 +1,25 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
-import { validarCatalogo, modeloDeRuta, resolverFicha, reposicion, precioTexto, carritoAnadir, carritoQuitar, carritoTotal, textoPedido, textoVenta, mailto } from '../assets/shop/core.mjs';
+import { validarCatalogo, modeloDeRuta, resolverFicha, reposicion, precioTexto, carritoAnadir, carritoQuitar, carritoTotal, carritoImportes, totalTexto, textoPedido, textoVenta, mailto } from '../assets/shop/core.mjs';
 
+// Intl separa «1.290 €» con espacio duro (U+00A0): bien en pantalla; en los tests se compara con espacio normal.
+const sp = (x) => String(x).replace(/\u00a0/g, ' ');
 const cat = JSON.parse(readFileSync(new URL('../data/catalogo.json', import.meta.url), 'utf8'));
 
-test('el catálogo cumple el contrato: slugs minúsculas-con-guiones, sin precios inventados, muestras marcadas', () => {
+test('el catálogo cumple el contrato: slugs, precio con precio_referencia, características y foto; muestras marcadas (#4293)', () => {
   assert.deepEqual(validarCatalogo(cat), []);
-  assert.ok(cat.productos.every((p) => p.precio === null), 'hoy no hay fuente de precios: todo «Consultar precio»');
+  assert.ok(cat.productos.every((p) => Number.isFinite(p.precio)), 'ya no hay «Consultar precio»: todo producto tiene importe');
+  assert.ok(cat.productos.every((p) => /^(MediaMarkt|Fnac|estimado|admira\.shop )/.test(p.precio_referencia)), 'la referencia es MediaMarkt, Fnac, estimado o el PVP de esta web');
   assert.ok(cat.productos.filter((p) => /muestra/i.test(p.nombre)).every((p) => p.muestra === true));
-  const malo = { categorias: [{ id: 'pantallas' }], productos: [{ modelo: 'Samsung QM55C', categoria: 'pantallas', muestra: true, precio: { importe: 999 } }] };
+  const malo = { categorias: [{ id: 'pantallas' }], productos: [{ modelo: 'Samsung QM55C', categoria: 'pantallas', muestra: true, precio: 999 }] };
   const e = validarCatalogo(malo);
-  assert.ok(e.some((x) => /minúsculas-con-guiones/.test(x)) && e.some((x) => /precio sin fuente/.test(x)));
+  assert.ok(e.some((x) => /minúsculas-con-guiones/.test(x)) && e.some((x) => /precio_referencia/.test(x)) && e.some((x) => /características/.test(x)) && e.some((x) => /foto/.test(x)));
 });
 
 test('cada categoría tiene productos y cada producto su ficha estática generada', () => {
-  for (const c of cat.categorias) assert.ok(cat.productos.some((p) => p.categoria === c.id), `categoría vacía: ${c.id}`);
+  for (const c of cat.categorias) assert.ok(cat.productos.filter((p) => p.categoria === c.id).length >= 3, `menos de tres productos en ${c.id}`);
+  for (const p of cat.productos) assert.ok(existsSync(new URL(`..${p.foto}`, import.meta.url)), `falta la foto ${p.foto}`);
   for (const p of cat.productos) assert.ok(existsSync(new URL(`../p/${p.modelo}/index.html`, import.meta.url)), `falta /p/${p.modelo}/ (npm run build)`);
 });
 
@@ -34,7 +38,9 @@ test('contrato con yokup (#4286): ?origen=yokup&equipo=<id> → «Reposición pa
   assert.deepEqual(reposicion('?origen=yokup&equipo=PANT-0042'), { origen: 'yokup', equipo: 'PANT-0042', texto: 'Reposición para el equipo PANT-0042' });
   assert.equal(reposicion('?equipo=PANT-0042'), null, 'sin origen=yokup no es reposición');
   assert.equal(reposicion('?origen=yokup&equipo=<script>'), null);
-  assert.equal(precioTexto(cat.productos[0]), 'Consultar precio');
+  assert.equal(sp(precioTexto({ precio: 1290 })), '1.290 €');
+  assert.equal(sp(precioTexto({ precio: 29, periodo: 'mes' })), '29 €/mes');
+  assert.equal(sp(precioTexto({ precio: 0 })), 'Gratis');
 });
 
 test('carrito y peticiones: la reposición viaja con su equipo; el correo va a info@admira.com', () => {
@@ -42,10 +48,24 @@ test('carrito y peticiones: la reposición viaja con su equipo; el correo va a i
   c = carritoAnadir(c, 'samsung-qm55c', 1, 'PANT-0042');
   c = carritoAnadir(c, 'brightsign-xt1144');
   assert.equal(carritoTotal(c), 4); assert.equal(c.length, 2);
-  const txt = textoPedido(c, cat, { nombre: 'Ana', email: 'ana@example.test' });
-  assert.match(txt, /3 × Samsung QM55C \(samsung-qm55c\) · reposición del equipo PANT-0042 \(yokup\)/);
+  const txt = sp(textoPedido(c, cat, { nombre: 'Ana', email: 'ana@example.test' }));
+  const precio = (m) => cat.productos.find((p) => p.modelo === m).precio;
+  const esperado = 3 * precio('samsung-qm55c') + precio('brightsign-xt1144');
+  assert.equal(carritoImportes(c, cat).unico, esperado);
+  assert.match(txt, /3 × Samsung QM55C \(samsung-qm55c\) · [\d.]+ € · reposición del equipo PANT-0042 \(yokup\)/);
+  assert.match(txt, new RegExp(`Total: ${sp(totalTexto(carritoImportes(c, cat))).replace(/[().]/g, '\\$&')}`));
   assert.match(txt, /Email: ana@example.test/); assert.doesNotMatch(txt, /Teléfono/);
   assert.equal(carritoTotal(carritoQuitar(c, 0)), 1);
   assert.match(textoVenta({ categoria: 'Pantallas', modelo: 'QM55C', estado: 'funciona' }), /recompra \/ renove[\s\S]*Modelo: QM55C/);
   assert.match(mailto(cat.contacto, 'Petición', 'a b'), /^mailto:info@admira\.com\?subject=Petici%C3%B3n&body=a%20b$/);
+});
+
+test('el carrito suma importes: lo que se paga una vez y la cuota mensual van por separado, IVA incluido', () => {
+  const c = carritoAnadir(carritoAnadir(carritoAnadir([], 'samsung-qm55c', 2), 'servicio-instalacion', 2), 'servicio-soporte', 2);
+  const imp = carritoImportes(c, cat);
+  const precio = (m) => cat.productos.find((p) => p.modelo === m).precio;
+  assert.equal(imp.unico, 2 * precio('samsung-qm55c') + 2 * precio('servicio-instalacion'));
+  assert.equal(imp.mensual, 2 * precio('servicio-soporte'));
+  assert.equal(sp(totalTexto({ unico: 2960, mensual: 38 })), '2.960 € + 38 €/mes (IVA incluido)');
+  assert.equal(carritoImportes([{ modelo: 'no-existe', cantidad: 1 }], cat).unico, 0);
 });

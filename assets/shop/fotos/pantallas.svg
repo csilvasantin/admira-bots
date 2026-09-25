@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-label="Ilustración genérica: pantallas">
+<defs><radialGradient id="g" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#FF3366" stop-opacity=".22"/><stop offset=".7" stop-color="#1e1e35"/></radialGradient></defs>
+<rect width="600" height="400" fill="url(#g)"/>
+<g style="filter:drop-shadow(0 0 10px #FF3366)"><rect x="90" y="70" width="420" height="240" rx="10" stroke="#FF3366" stroke-width="6" fill="none" stroke-linejoin="round" stroke-linecap="round"/><rect x="108" y="88" width="384" height="204" rx="4" fill="#FF3366" opacity=".16"/><path d="M270 310v40M330 310v40M220 352h160" stroke="#FF3366" stroke-width="6" fill="none" stroke-linejoin="round" stroke-linecap="round"/></g>
+</svg>

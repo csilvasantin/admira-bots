@@ -1,6 +1,6 @@
 // admira.shop · interfaz de la tienda del Xpacio (encargo #4291 · MorfeoMacMini · 25-09-2026).
 // Todo se pinta con textContent: ni el `equipo` de la URL ni el catálogo pueden inyectar HTML.
-import { modeloDeRuta, resolverFicha, reposicion, precioTexto, productosDe, carritoAnadir, carritoQuitar, carritoTotal, textoPedido, textoVenta, mailto } from './core.mjs';
+import { modeloDeRuta, resolverFicha, reposicion, precioTexto, euros, productosDe, carritoAnadir, carritoQuitar, carritoTotal, carritoImportes, totalTexto, textoPedido, textoVenta, mailto } from './core.mjs';
 
 const $ = (s, r = document) => r.querySelector(s);
 const el = (tag, props = {}, ...hijos) => {
@@ -29,7 +29,7 @@ const urlFicha = (p, repo = null) => `/p/${p.modelo}/` + (repo ? `?origen=yokup&
 function tarjetaProducto(p, repo = null) {
   const c = categoria(p.categoria);
   const t = el('a', { class: 'tarjeta', href: urlFicha(p, repo), style: `--c:${c.color}` },
-    el('span', { class: 'icono', text: c.icono, 'aria-hidden': 'true' }),
+    el('img', { class: 'foto', src: p.foto, alt: '', loading: 'lazy', width: '600', height: '400' }),
     el('h3', { text: p.nombre }),
     el('p', { text: p.resumen }),
     el('div', { class: 'pie' }, el('span', { class: 'precio', text: precioTexto(p) }), p.muestra ? el('span', { class: 'chip muestra', text: 'muestra' }) : el('span', { class: 'chip', text: c.nombre })));
@@ -60,7 +60,7 @@ function pintarCatalogo(destino, cat, motivo, repo = null) {
     el('p', { class: 'lead', text: c ? c.descripcion : 'Pantallas, players, sonido, aromas, red, cámaras, kioscos, robots y servicios.' }),
     filtros,
     el('div', { class: 'rejilla' }, ...productosDe(CAT, c ? cat : null).map((p) => tarjetaProducto(p, repo))),
-    el('p', { class: 'escena-pista', text: 'Precios bajo consulta. Los productos marcados «muestra» son ejemplos: te confirmamos disponibilidad y ficha técnica al pedir presupuesto.' }));
+    el('p', { class: 'escena-pista', text: 'Precios en euros, IVA incluido. Los productos marcados «muestra» son ejemplos: te confirmamos disponibilidad y ficha técnica al tramitar el pedido.' }));
 }
 async function paginaCatalogo() {
   await catalogo();
@@ -69,6 +69,11 @@ async function paginaCatalogo() {
   if (categoria(cat)) document.title = `${categoria(cat).nombre} · admira.shop`;
 }
 
+// Servicios AdmiraXperience que se ofrecen como opción en la ficha de cualquier equipo.
+const OPCIONES = [
+  { modelo: 'servicio-instalacion', texto: 'Instalación AdmiraXperience', detalle: 'montaje, cableado y alta en Admira, por unidad' },
+  { modelo: 'servicio-soporte', texto: 'Soporte AdmiraXperience', detalle: 'atención remota y red de técnicos Yokup, por unidad' },
+];
 async function ficha() {
   await catalogo();
   const vista = $('#vista');
@@ -77,30 +82,52 @@ async function ficha() {
   if (r.tipo === 'catalogo') { pintarCatalogo(vista, r.categoria, r.motivo, repo); document.title = 'Pantallas · admira.shop'; return; }
   const { producto: p, categoria: c } = r;
   document.title = `${p.nombre} · admira.shop`;
+  const esServicio = !!p.servicio;
   const cantidad = el('input', { class: 'cantidad', type: 'number', min: '1', max: '999', value: '1', 'aria-label': 'Cantidad' });
   const estado = el('p', { class: 'estado', role: 'status' });
-  const anadir = el('button', { class: 'btn primario', type: 'button', text: repo ? 'Añadir reposición al carrito' : 'Añadir al carrito' });
+  // Opción de instalación y soporte (solo en equipos: un servicio no se instala).
+  const opciones = esServicio ? [] : OPCIONES.map((o) => ({ ...o, p: CAT.productos.find((x) => x.modelo === o.modelo) })).filter((o) => o.p)
+    .map((o) => ({ ...o, check: el('input', { type: 'checkbox', value: o.modelo }) }));
+  const anadir = el('button', { class: 'btn primario grande', type: 'button', text: repo ? 'Añadir reposición al carrito' : 'Añadir al carrito' });
   anadir.onclick = () => {
-    guardarCarrito(carritoAnadir(leerCarrito(), p.modelo, cantidad.value, repo ? repo.equipo : null));
-    estado.replaceChildren('Añadido. ', el('a', { href: '/carrito/', text: 'Ver carrito y pedir presupuesto →' }));
+    const equipo = repo ? repo.equipo : null;
+    let c2 = carritoAnadir(leerCarrito(), p.modelo, cantidad.value, equipo);
+    for (const o of opciones) if (o.check.checked) c2 = carritoAnadir(c2, o.modelo, cantidad.value, equipo);
+    guardarCarrito(c2);
+    const extra = opciones.filter((o) => o.check.checked).map((o) => o.texto.toLowerCase());
+    estado.replaceChildren(`Añadido${extra.length ? ` con ${extra.join(' y ')}` : ''}. `, el('a', { href: '/carrito/', text: 'Ver carrito →' }));
   };
+  const compra = el('div', { class: 'compra' },
+    el('p', { class: 'precio-grande' }, el('span', { text: precioTexto(p) })),
+    el('p', { class: 'iva', text: p.precio === 0 ? 'Sin coste' : `IVA incluido${p.periodo === 'mes' ? ' · cuota mensual' : ''}` }),
+    ...(opciones.length ? [el('fieldset', { class: 'opciones' }, el('legend', { text: 'Añade AdmiraXperience' }),
+      ...opciones.map((o) => el('label', { class: 'opcion' }, o.check,
+        el('span', {}, el('b', { text: o.texto }), el('small', { text: o.detalle })), el('span', { class: 'precio', text: `+ ${precioTexto(o.p)}` }))))] : []),
+    el('div', { class: 'botones' }, cantidad, anadir),
+    estado);
+  const caracteristicas = el('ul', { class: 'caracteristicas' }, ...(p.caracteristicas || []).map((t) => el('li', { text: t })));
   const datos = el('dl', { class: 'datos' },
     el('dt', { text: 'Modelo' }), el('dd', { text: p.modelo }),
     el('dt', { text: 'Marca' }), el('dd', { text: p.marca }),
-    el('dt', { text: 'Categoría' }), el('dd', {}, el('a', { href: `/catalogo/?cat=${c.id}`, text: c.nombre })),
-    el('dt', { text: 'Precio' }), el('dd', { class: 'precio', text: precioTexto(p) }));
-  const acciones = el('div', { class: 'botones' }, cantidad, anadir,
-    ...(p.url ? [el('a', { class: 'btn', href: p.url, text: p.categoria === 'robots' ? 'Ver ficha completa del robot' : 'Ir al servicio' })] : []),
-    el('a', { class: 'btn', href: '/vende/', text: 'Véndenos el tuyo usado' }));
+    el('dt', { text: 'Categoría' }), el('dd', {}, el('a', { href: `/catalogo/?cat=${c.id}`, text: c.nombre })));
+  const vende = p.categoria === 'servicios' ? null : el('aside', { class: 'vende-bloque' },
+    el('h2', { text: 'Véndenos el tuyo' }),
+    el('p', { text: `¿Renuevas? Te compramos o recogemos tu equipo usado de ${c.nombre.toLowerCase()} y lo descontamos de este pedido.` }),
+    el('a', { class: 'btn', href: `/vende/?categoria=${encodeURIComponent(c.id)}`, text: 'Tasar mi equipo usado →' }));
   vista.replaceChildren(
     el('p', { class: 'prompt' }, 'cat ', el('span', { text: `/p/${p.modelo}/` })),
     ...(repo ? [el('p', { class: 'reposicion', role: 'note' }, el('span', { text: '↻', 'aria-hidden': 'true' }), el('span', { text: repo.texto }))] : []),
     el('div', { class: 'ficha' },
-      el('div', { class: 'visual', style: `--c:${c.color}`, 'aria-hidden': 'true', text: c.icono }),
+      el('div', { class: 'visual', style: `--c:${c.color}` }, el('img', { src: p.foto, alt: `${p.nombre} (ilustración)`, width: '600', height: '400' })),
       el('div', {},
+        el('p', { class: 'marca-chip', text: `${p.marca !== '—' ? p.marca + ' · ' : ''}${c.nombre}` }),
         el('h1', { text: p.nombre }), el('p', { class: 'lead', text: p.resumen }),
-        ...(p.muestra ? [el('p', { class: 'aviso', text: 'Producto de muestra: te confirmamos disponibilidad, ficha técnica y precio al pedir presupuesto.' })] : []),
-        datos, acciones, estado)));
+        compra,
+        el('h2', { class: 'sub', text: 'Características clave' }), caracteristicas,
+        ...(p.muestra ? [el('p', { class: 'aviso', text: 'Producto de muestra: te confirmamos disponibilidad y ficha técnica al tramitar el pedido.' })] : []),
+        datos,
+        ...(p.url ? [el('div', { class: 'botones' }, el('a', { class: 'btn', href: p.url, text: p.categoria === 'robots' ? 'Ver ficha completa del robot' : 'Ir al servicio' }))] : []))),
+    ...(vende ? [vende] : []));
 }
 
 async function carrito() {
@@ -114,21 +141,24 @@ async function carrito() {
       const quitar = el('button', { class: 'btn', type: 'button', text: 'Quitar' });
       quitar.onclick = () => { guardarCarrito(carritoQuitar(leerCarrito(), i)); pintar(); };
       return el('tr', {}, el('td', {}, el('a', { href: `/p/${l.modelo}/`, text: p ? p.nombre : l.modelo }), l.equipo ? el('small', { text: `Reposición del equipo ${l.equipo}` }) : null),
-        el('td', { text: String(l.cantidad) }), el('td', { class: 'precio', text: precioTexto(p) }), el('td', {}, quitar));
+        el('td', { text: String(l.cantidad) }), el('td', { text: precioTexto(p) }),
+        el('td', { class: 'precio', text: p ? euros(p.precio * l.cantidad) + (p.periodo === 'mes' ? '/mes' : '') : '—' }), el('td', {}, quitar));
     });
+    const imp = carritoImportes(c, CAT);
     vista.replaceChildren(...(c.length ? [el('table', { class: 'carrito-lista' },
-      el('thead', {}, el('tr', {}, ...['Producto', 'Uds.', 'Precio', ''].map((t) => el('th', { text: t })))), el('tbody', {}, ...filas))] : []));
+      el('thead', {}, el('tr', {}, ...['Producto', 'Uds.', 'Precio', 'Importe', ''].map((t) => el('th', { text: t })))), el('tbody', {}, ...filas),
+      el('tfoot', {}, el('tr', {}, el('th', { colspan: '3', text: 'Total' }), el('td', { colspan: '2', class: 'precio total', text: totalTexto(imp) }))))] : []));
   };
   form.onsubmit = (e) => {
     e.preventDefault();
     const datos = Object.fromEntries(new FormData(form));
     const cuerpo = textoPedido(leerCarrito(), CAT, datos);
-    location.href = mailto(CAT.contacto, `Petición de presupuesto admira.shop · ${datos.empresa || datos.nombre || ''}`.trim(), cuerpo);
-    estado.textContent = `Abriendo tu correo para enviar la petición a ${CAT.contacto}. Si no se abre, usa «Copiar petición».`;
+    location.href = mailto(CAT.contacto, `Pedido admira.shop · ${datos.empresa || datos.nombre || ''}`.trim(), cuerpo);
+    estado.textContent = `Abriendo tu correo para enviar el pedido a ${CAT.contacto}. Si no se abre, usa «Copiar pedido».`;
   };
   $('#copiar-pedido').onclick = async () => {
     const texto = textoPedido(leerCarrito(), CAT, Object.fromEntries(new FormData(form)));
-    try { await navigator.clipboard.writeText(texto); estado.textContent = `Petición copiada: pégala en un correo a ${CAT.contacto}.`; } catch { estado.textContent = texto; }
+    try { await navigator.clipboard.writeText(texto); estado.textContent = `Pedido copiado: pégalo en un correo a ${CAT.contacto}.`; } catch { estado.textContent = texto; }
   };
   pintar();
 }
@@ -137,6 +167,8 @@ async function vende() {
   await catalogo();
   const form = $('#venta'), estado = $('#estado-venta'), sel = $('#venta-categoria');
   sel.replaceChildren(el('option', { value: '', text: 'Elige…' }), ...CAT.categorias.filter((c) => c.id !== 'servicios').map((c) => el('option', { value: c.nombre, text: c.nombre })));
+  const pre = categoria(new URLSearchParams(location.search).get('categoria'));
+  if (pre && pre.id !== 'servicios') sel.value = pre.nombre;
   form.onsubmit = (e) => {
     e.preventDefault();
     const d = Object.fromEntries(new FormData(form));

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-label="Ilustración genérica: aromas">
+<defs><radialGradient id="g" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#FF33CC" stop-opacity=".22"/><stop offset=".7" stop-color="#1e1e35"/></radialGradient></defs>
+<rect width="600" height="400" fill="url(#g)"/>
+<g style="filter:drop-shadow(0 0 10px #FF33CC)"><path d="M240 180h120v170a20 20 0 0 1-20 20h-80a20 20 0 0 1-20-20z" stroke="#FF33CC" stroke-width="6" fill="none" stroke-linejoin="round" stroke-linecap="round"/><rect x="262" y="140" width="76" height="40" rx="6" stroke="#FF33CC" stroke-width="6" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M280 120c-20-30 20-40 0-70M320 120c-20-30 20-40 0-70" stroke="#FF33CC" stroke-width="6" fill="none" stroke-linejoin="round" stroke-linecap="round" opacity=".7"/></g>
+</svg>

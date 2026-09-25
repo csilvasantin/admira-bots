@@ -129,3 +129,28 @@ textarea { min-height: 96px; resize: vertical; }
 .dos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 @media (max-width: 760px) { .dos { grid-template-columns: 1fr; } }
 .oculto, [hidden] { display: none !important; }
+
+/* Ficha estilo gran superficie (#4293): foto, precio grande, características, opciones AdmiraXperience y Véndenos el tuyo */
+.tarjeta .foto { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 8px; margin-bottom: 6px; background: var(--bg-darker); }
+.ficha .visual { display: block; aspect-ratio: auto; padding: 0; overflow: hidden; }
+.ficha .visual img { display: block; width: 100%; height: auto; }
+@media (max-width: 820px) { .ficha .visual { height: auto; } }
+.marca-chip { color: var(--text-muted); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; margin: 0 0 6px; }
+.compra { margin: 18px 0 22px; padding: 18px; border: 1px solid var(--border); border-radius: var(--radius); background: rgba(30,30,53,.9); }
+.precio-grande { margin: 0; font-size: clamp(34px, 5vw, 48px); font-weight: 800; line-height: 1; color: var(--accent-bright); letter-spacing: -.02em; }
+.iva { margin: 6px 0 14px; color: var(--text-muted); font-size: 12px; }
+.opciones { border: 1px dashed var(--border-dashed); border-radius: 10px; padding: 10px 12px; margin: 0 0 4px; display: grid; gap: 8px; }
+.opciones legend { padding: 0 6px; color: var(--text-dim); font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+.opcion { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; font-size: 13px; color: var(--text); cursor: pointer; }
+.opcion input { width: 18px; height: 18px; min-height: 0; accent-color: var(--accent); }
+.opcion small { display: block; color: var(--text-muted); font-size: 11px; }
+.btn.grande { min-height: 48px; font-size: 14px; flex: 1 1 200px; justify-content: center; }
+h2.sub { font-size: 17px; margin-top: 8px; }
+.caracteristicas { margin: 0 0 18px; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; }
+.caracteristicas li::marker { color: var(--accent); }
+.vende-bloque { margin-top: 26px; padding: 18px; border-radius: var(--radius); border: 1px solid var(--green); background: rgba(126,200,155,.07); }
+.vende-bloque h2 { font-size: 20px; color: var(--green); }
+.vende-bloque p { color: var(--text-dim); margin: 0 0 12px; }
+.carrito-lista tfoot th, .carrito-lista tfoot td { border-bottom: 0; padding-top: 14px; font-size: 15px; }
+.carrito-lista .total { font-size: 18px; }
+@media (max-width: 640px) { .carrito-lista { font-size: 12px; } .carrito-lista th, .carrito-lista td { padding: 8px 4px; } }

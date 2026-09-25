@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-label="Ilustración genérica: players">
+<defs><radialGradient id="g" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#FFCC00" stop-opacity=".22"/><stop offset=".7" stop-color="#1e1e35"/></radialGradient></defs>
+<rect width="600" height="400" fill="url(#g)"/>
+<g style="filter:drop-shadow(0 0 10px #FFCC00)"><rect x="170" y="150" width="260" height="110" rx="18" stroke="#FFCC00" stroke-width="6" fill="none" stroke-linejoin="round" stroke-linecap="round"/><circle cx="220" cy="205" r="10" fill="#FFCC00"/><path d="M270 190h120M270 220h80" stroke="#FFCC00" stroke-width="6" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M430 190h40M430 220h40" stroke="#FFCC00" stroke-width="6" fill="none" stroke-linejoin="round" stroke-linecap="round"/></g>
+</svg>

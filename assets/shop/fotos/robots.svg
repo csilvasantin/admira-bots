@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-label="Ilustración genérica: robots">
+<defs><radialGradient id="g" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#b88ce8" stop-opacity=".22"/><stop offset=".7" stop-color="#1e1e35"/></radialGradient></defs>
+<rect width="600" height="400" fill="url(#g)"/>
+<g style="filter:drop-shadow(0 0 10px #b88ce8)"><rect x="245" y="60" width="110" height="90" rx="30" stroke="#b88ce8" stroke-width="6" fill="none" stroke-linejoin="round" stroke-linecap="round"/><circle cx="278" cy="105" r="9" fill="#b88ce8"/><circle cx="322" cy="105" r="9" fill="#b88ce8"/><rect x="235" y="160" width="130" height="120" rx="20" stroke="#b88ce8" stroke-width="6" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M235 180l-40 70M365 180l40 70M270 280v70M330 280v70" stroke="#b88ce8" stroke-width="6" fill="none" stroke-linejoin="round" stroke-linecap="round"/></g>
+</svg>

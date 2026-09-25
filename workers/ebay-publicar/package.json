@@ -1,0 +1,9 @@
+{
+  "name": "admira-shop-ebay",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/",
+    "deploy": "npx wrangler deploy"
+  }
+}

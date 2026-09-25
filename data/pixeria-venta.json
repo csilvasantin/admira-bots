@@ -21,7 +21,14 @@
       "foto": "https://api.yokup.com/media/fleet/c7e139c8a7551532.png",
       "precioEUR": 500,
       "destacado": 1,
-      "wallapopUrl": null
+      "wallapopUrl": null,
+      "fotosMatrix": [
+        "/pixeria/fotos/1790370186236-n4eyaq/frente.jpg",
+        "/pixeria/fotos/1790370186236-n4eyaq/tresquartos.jpg",
+        "/pixeria/fotos/1790370186236-n4eyaq/detalle.jpg",
+        "/pixeria/fotos/1790370186236-n4eyaq/xpacio.jpg"
+      ],
+      "textoWallapop": "Cafetera espresso profesional de tres grupos, con su molino de café al lado. Estaba detrás de la barra de una cafetería. Ideal para bar, cafetería o restaurante. Pregunta lo que necesites antes de comprar."
     },
     "1790368707714-jwgkfk": {
       "titulo": "Silla azul de la cafetería de Alsea · 95 cm",
@@ -34,5 +41,12 @@
     "nota": "Muebles de segunda mano a la venta también en Wallapop (encargo #4400). La ficha tiene un botón «Vender en Wallapop» que prepara el anuncio para copiarlo (título, descripción, precio, categoría, estado y fotos) y abre el formulario de subida de Wallapop. Wallapop no tiene enlace oficial con datos precargados; su Connect API exige credenciales de integrador. Cuando el anuncio esté publicado, pega su enlace en wallapopUrl del mueble y la ficha enseñará «Ver en Wallapop». Si el texto de la ficha no sirve para el anuncio (habla del modelo 3D), pon el del mueble físico en textoWallapop.",
     "categoria": "Hogar y jardín > Muebles",
     "estado": "De segunda mano"
+  },
+  "matrix": {
+    "nota": "Fotos hiperrealistas del modo Matrix de las Xperiences (encargo #4405): render Best del GLB de Pixeria en Blender (frente, 3/4 y detalle) y de su sitio en el Xpacio, pasado a acabado fotográfico con grok-imagine (xAI, edición de imagen), el mismo paso que admira-xp/tools/walk-sprites/photo-pass.py. Van en /pixeria/fotos/<id>/ y se listan en fotosMatrix del mueble; la ficha las enseña y los paneles de Wallapop y eBay las usan en vez de los renders. Son imágenes generadas a partir del modelo, no fotos del objeto."
+  },
+  "ebay": {
+    "nota": "Publicar en eBay (encargo #4405): la ficha llama al Worker workers/ebay-publicar, que crea el anuncio con la Sell Inventory API (título, texto, fotos Matrix, precioEUR y estado usado). Mientras worker sea null, o falten credenciales, el botón solo enseña la vista previa del anuncio. Por mueble se puede fijar ebay.titulo, ebay.texto, ebay.categoria, ebay.estado y ebay.aspectos.",
+    "worker": null
   }
 }

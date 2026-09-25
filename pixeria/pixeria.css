@@ -84,3 +84,12 @@ dialog.wallapop::backdrop{background:rgba(0,0,0,.7)}
 .wp-foto img{width:100%;height:100%;object-fit:cover;display:block}
 .wp-foto span{position:absolute;inset:auto 0 0 0;background:rgba(0,0,0,.65);color:#fff;font:.75rem ui-monospace,monospace;padding:4px}
 .wp-pie{margin:16px 0 0;font-size:.85rem}
+.fotos-matrix{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.fotos-matrix button{padding:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#dfe3df;cursor:pointer;aspect-ratio:1}
+.fotos-matrix button:hover{border-color:var(--cyan)}
+.fotos-matrix img{width:100%;height:100%;object-fit:cover;display:block}
+.publicar-ebay-ficha,.publicar-ebay{min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius);font:700 1rem Georgia,serif;cursor:pointer;background:transparent;color:#f5af02;border:1px solid #f5af02}
+.publicar-ebay{width:100%;margin-top:16px;background:#f5af02;color:#1a1300;border:0}
+.publicar-ebay-ficha:hover,.publicar-ebay:hover{filter:brightness(1.15)}
+.eb-dato{margin:0;white-space:pre-line}
+.publicar-ebay[hidden]{display:none}

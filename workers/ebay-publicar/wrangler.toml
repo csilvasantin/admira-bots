@@ -1,0 +1,30 @@
+# Worker «Publicar en eBay» de admira.shop (encargo #4405).
+# Crea el anuncio de un mueble de Pixeria con la Sell Inventory API de eBay.
+# Sin desplegar todavía: faltan las credenciales de Carlos (ver README.md).
+name = "admira-shop-ebay"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+EBAY_ENV = "production"          # "sandbox" para probar con usuarios de prueba
+EBAY_MARKETPLACE = "EBAY_ES"
+EBAY_IDIOMA = "es-ES"
+SHOP_ORIGIN = "https://admira.shop"
+STOCK_INDEX = "https://stock.admira.store/stock/index.json"
+# Ids que da Carlos (no son secretos): rellenar y volver a desplegar.
+EBAY_FULFILLMENT_POLICY_ID = ""
+EBAY_PAYMENT_POLICY_ID = ""
+EBAY_RETURN_POLICY_ID = ""
+EBAY_MERCHANT_LOCATION_KEY = "admira-bcn"
+EBAY_CATEGORY_ID = ""            # vacío = la sugiere la Taxonomy API de eBay
+EBAY_RUNAME = ""                 # RuName de la app (Auth accepted URL = <worker>/ebay/oauth/vuelta)
+
+# Secretos, SIEMPRE con `npx wrangler secret put NOMBRE`, nunca aquí:
+#   EBAY_APP_ID, EBAY_CERT_ID, EBAY_PUBLISH_KEY
+#   EBAY_REFRESH_TOKEN (opcional si se usa el flujo /ebay/oauth/inicio con KV)
+
+# KV para guardar el token de usuario que deja el flujo OAuth.
+# Crear con `npx wrangler kv namespace create EBAY` y pegar su id aquí.
+# [[kv_namespaces]]
+# binding = "EBAY"
+# id = ""

@@ -14,6 +14,7 @@
   var WALLAPOP_SUBIR = 'https://es.wallapop.com/app/catalog/upload';
   var WALLAPOP_CATEGORIA = 'Hogar y jardín > Muebles';
   var WALLAPOP_TITULO_MAX = 50;
+  var EBAY_CLAVE = 'admira-shop-ebay-clave';
   var app = document.getElementById('app');
 
   function esc(s) {
@@ -73,6 +74,8 @@
       enVenta: 'enVenta' in extra ? extra.enVenta !== false : base.enVenta !== false,
       precio: typeof precio === 'number' && isFinite(precio) ? precio : null,
       fotos: [extra.foto, item.thumbnail].concat(extra.fotos || []).filter(function (f, i, a) { return f && a.indexOf(f) === i; }),
+      // Fotos hiperrealistas del modo Matrix (encargo #4405): mandan en los anuncios.
+      fotosMatrix: (extra.fotosMatrix || []).filter(Boolean),
       wallapopUrl: /^https:\/\/([a-z]+\.)?wallapop\.com\//.test(extra.wallapopUrl || '') ? extra.wallapopUrl : null,
       destacado: extra.destacado || 0,
       alta: item.createdAt || ''
@@ -159,8 +162,14 @@
     '</div>';
   }
 
+  // Para anunciar, las fotos Matrix; si el mueble aún no las tiene, los renders.
+  function fotosAnuncio(p) {
+    return p.fotosMatrix.length ? p.fotosMatrix : p.fotos;
+  }
+
   function panelWallapop(p, venta) {
     var wp = venta.wallapop || {};
+    var fotos = fotosAnuncio(p);
     var precio = p.precio == null ? 'precio pendiente' : String(p.precio).replace('.', ',') + ' €';
     var d = document.createElement('dialog');
     d.className = 'wallapop';
@@ -175,9 +184,9 @@
       campoWallapop('categoria', 'Categoría sugerida', wp.categoria || WALLAPOP_CATEGORIA) +
       campoWallapop('estado', 'Estado', wp.estado || 'De segunda mano') +
       '<div class="campo"><div class="campo-cab"><span>Fotos</span>' +
-        (p.fotos.length ? '<button type="button" class="copiar" data-todas>Descargar todas</button>' : '') + '</div>' +
-        (p.fotos.length
-          ? '<div class="wp-fotos">' + p.fotos.map(function (f, i) {
+        (fotos.length ? '<button type="button" class="copiar" data-todas>Descargar todas</button>' : '') + '</div>' +
+        (fotos.length
+          ? '<div class="wp-fotos">' + fotos.map(function (f, i) {
               return '<button type="button" class="wp-foto" data-foto="' + i + '" title="Descargar">' +
                 '<img src="' + esc(f) + '" alt="Foto ' + (i + 1) + '"><span>Descargar</span></button>';
             }).join('') + '</div>'
@@ -190,10 +199,76 @@
       var b = ev.target.closest('button');
       if (!b) return;
       if (b.dataset.copia) copiar(document.getElementById(b.dataset.copia).value, b);
-      if (b.dataset.foto) descargar(p.fotos[+b.dataset.foto], nombreFoto(p, +b.dataset.foto, p.fotos[+b.dataset.foto]));
-      if ('todas' in b.dataset) p.fotos.forEach(function (f, i) { descargar(f, nombreFoto(p, i, f)); });
+      if (b.dataset.foto) descargar(fotos[+b.dataset.foto], nombreFoto(p, +b.dataset.foto, fotos[+b.dataset.foto]));
+      if ('todas' in b.dataset) fotos.forEach(function (f, i) { descargar(f, nombreFoto(p, i, f)); });
     });
     d.showModal();
+  }
+
+  // Publicar en eBay (encargo #4405): el Worker workers/ebay-publicar crea el anuncio
+  // con la Sell Inventory API. Sin Worker o sin credenciales, solo vista previa.
+  function panelEbay(p, venta) {
+    var eb = venta.ebay || {};
+    var fotos = fotosAnuncio(p);
+    var d = document.createElement('dialog');
+    d.className = 'wallapop ebay';
+    d.innerHTML =
+      '<form method="dialog" class="wp-cab"><h2>Anuncio para eBay</h2>' +
+        '<button class="cerrar" aria-label="Cerrar">×</button></form>' +
+      '<p class="aviso eb-estado">' + (eb.worker ? 'Consultando el enlace con eBay…' :
+        'eBay aún no está conectado: faltan las credenciales de la cuenta vendedora. Esto es la vista previa; nada se publica.') + '</p>' +
+      '<div class="campo"><div class="campo-cab"><span>Título</span></div><p class="eb-dato">' + esc(p.titulo.slice(0, 80)) + '</p></div>' +
+      '<div class="campo"><div class="campo-cab"><span>Precio · estado</span></div><p class="eb-dato">' +
+        (p.precio == null ? 'precio pendiente' : euros(p.precio)) + ' · Usado</p></div>' +
+      '<div class="campo"><div class="campo-cab"><span>Texto</span></div><p class="eb-dato">' + esc(p.textoWallapop || p.texto || textoPorDefecto(p)) + '</p></div>' +
+      '<div class="campo"><div class="campo-cab"><span>Fotos</span></div><div class="wp-fotos">' +
+        fotos.map(function (f, i) { return '<span class="wp-foto"><img src="' + esc(f) + '" alt="Foto ' + (i + 1) + '"></span>'; }).join('') +
+      '</div></div>' +
+      '<button type="button" class="publicar-ebay" hidden>Publicar ahora en eBay</button>';
+    document.body.appendChild(d);
+    d.addEventListener('close', function () { d.remove(); });
+    d.showModal();
+    if (!eb.worker) return;
+    var estado = d.querySelector('.eb-estado');
+    var boton = d.querySelector('.publicar-ebay');
+    var llamar = function (cuerpo, clave) {
+      return fetch(eb.worker.replace(/\/$/, '') + '/ebay/publicar', {
+        method: 'POST',
+        headers: Object.assign({ 'Content-Type': 'application/json' }, clave ? { Authorization: 'Bearer ' + clave } : {}),
+        body: JSON.stringify(cuerpo)
+      }).then(function (r) { return r.json(); });
+    };
+    llamar({ id: p.id, dry: true }).then(function (r) {
+      if (r.error) throw new Error(r.error);
+      if (r.faltan && r.faltan.length) {
+        estado.textContent = 'eBay aún no está conectado: faltan ' + r.faltan.join(', ') + '. Esto es la vista previa; nada se publica.';
+        return;
+      }
+      if (r.anuncio && r.anuncio.problemas.length) {
+        estado.textContent = 'No se puede publicar todavía: ' + r.anuncio.problemas.join(', ') + '.';
+        return;
+      }
+      estado.textContent = 'eBay conectado. Revisa el anuncio y publícalo.';
+      boton.hidden = false;
+    }).catch(function (e) { estado.textContent = 'No he podido hablar con el enlace de eBay (' + e.message + ').'; });
+    boton.addEventListener('click', function () {
+      var clave = '';
+      try { clave = localStorage.getItem(EBAY_CLAVE) || ''; } catch (e) { /* sin almacenamiento */ }
+      clave = clave || window.prompt('Clave de publicación de admira.shop') || '';
+      if (!clave) return;
+      boton.disabled = true;
+      estado.textContent = 'Publicando en eBay…';
+      llamar({ id: p.id }, clave).then(function (r) {
+        if (!r.publicado) throw new Error(r.error + (r.problemas ? ': ' + r.problemas.join(', ') : ''));
+        try { localStorage.setItem(EBAY_CLAVE, clave); } catch (e) { /* sin almacenamiento */ }
+        estado.innerHTML = 'Publicado. <a href="' + esc(r.url) + '" target="_blank" rel="noopener">Ver el anuncio en eBay ↗</a>';
+        boton.hidden = true;
+      }).catch(function (e) {
+        if (/clave/.test(e.message)) { try { localStorage.removeItem(EBAY_CLAVE); } catch (x) { /* nada */ } }
+        estado.textContent = 'eBay no lo ha aceptado: ' + e.message;
+        boton.disabled = false;
+      });
+    });
   }
 
   function precioHTML(p) {
@@ -236,6 +311,11 @@
       '<article class="ficha" data-asset="' + esc(p.id) + '">' +
         '<div class="medios">' +
           (p.foto ? '<img class="foto-ficha" src="' + esc(p.foto) + '" alt="' + esc(p.titulo) + '">' : '') +
+          (p.fotosMatrix.length
+            ? '<div class="fotos-matrix">' + p.fotosMatrix.map(function (f, i) {
+                return '<button type="button" data-foto="' + esc(f) + '" title="Ver grande"><img loading="lazy" src="' + esc(f) + '" alt="Foto ' + (i + 1) + '"></button>';
+              }).join('') + '</div>'
+            : '') +
           visor +
         '</div>' +
         '<div class="info">' +
@@ -257,6 +337,7 @@
             '<p class="eyebrow">Segunda mano</p>' +
             (p.wallapopUrl ? '<a class="ver-wallapop" href="' + esc(p.wallapopUrl) + '" target="_blank" rel="noopener">Ver en Wallapop ↗</a>' : '') +
             '<button class="vender-wallapop" type="button">' + (p.wallapopUrl ? 'Preparar otro anuncio' : 'Vender en Wallapop') + '</button>' +
+            '<button class="publicar-ebay-ficha" type="button">Publicar en eBay</button>' +
           '</div>' +
         '</div>' +
       '</article>';
@@ -265,6 +346,17 @@
       // Abrir la pestaña dentro del clic, o el bloqueador de ventanas la corta.
       window.open(WALLAPOP_SUBIR, '_blank', 'noopener');
       panelWallapop(p, venta);
+    });
+
+    app.querySelector('.publicar-ebay-ficha').addEventListener('click', function () {
+      panelEbay(p, venta);
+    });
+
+    var galeria = app.querySelector('.fotos-matrix');
+    if (galeria) galeria.addEventListener('click', function (ev) {
+      var b = ev.target.closest('button');
+      var grande = app.querySelector('.foto-ficha');
+      if (b && grande) grande.src = b.dataset.foto;
     });
 
     app.querySelector('.comprar').addEventListener('click', function () {

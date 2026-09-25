@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Véndenos tu equipo · ADmira.shop</title>
+<meta name="description" content="Recompra y renove: véndenos o entréganos tu pantalla, player, robot o equipo usado.">
+<meta name="admiranext-version" content="AdmiraNeXT v.26.09.25.r1">
+<link rel="canonical" href="https://admira.shop/vende/">
+<meta property="og:title" content="Véndenos tu equipo · ADmira.shop"><meta property="og:description" content="Recompra y renove: véndenos o entréganos tu pantalla, player, robot o equipo usado.">
+<meta property="og:image" content="https://admira.shop/og-image.jpg"><meta property="og:url" content="https://admira.shop/vende/"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#1a1a2e">
+<link rel="preload" href="/assets/shop/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/shop/shop.css?v=v.26.09.25.r1">
+<script type="module" src="/assets/shop/shop.js?v=v.26.09.25.r1"></script>
+</head>
+<body data-page="vende">
+<div class="fondo" aria-hidden="true"><video autoplay muted loop playsinline preload="metadata" poster="/assets/shop/robots.jpg"><source src="/assets/shop/fondo.mp4" type="video/mp4"></video></div>
+<header class="barra">
+  <a class="marca" href="/" aria-label="ADmira.shop, inicio"><span class="admira">ADmira.</span><span class="neon"><span class="bln bln-1">S</span><span class="bln bln-2">H</span><span class="bln bln-3">O</span><span class="bln bln-4">P</span></span></a>
+  <nav class="menu" aria-label="Principal"><a href="/">Xpacio</a><a href="/catalogo/">Catálogo</a><a href="/vende/" aria-current="page">Véndenos tu equipo</a><a href="/robots.html">Robots</a><a class="carrito-link" href="/carrito/">Carrito<b data-contador hidden>0</b></a></nav>
+</header>
+<main>
+<section class="ventana"><header><span class="puntos" aria-hidden="true"><i></i><i></i><i></i></span><span class="ruta">sell ~/equipo-usado</span></header><div class="cuerpo"><h1>Véndenos tu equipo</h1><p class="lead">Recompra y renove: cuéntanos qué tienes y te hacemos una oferta o lo descontamos de tu nuevo presupuesto.</p>
+<form id="venta" class="campos">
+<label>Categoría<select name="categoria" id="venta-categoria" required></select></label><label>Marca<input name="marca" required></label>
+<label>Modelo<input name="modelo" required></label><label>Cantidad<input name="cantidad" type="number" min="1" value="1"></label>
+<label>Estado<select name="estado"><option>Funciona perfectamente</option><option>Funciona con detalles</option><option>No funciona</option></select></label>
+<label>Antigüedad<input name="antiguedad" placeholder="p. ej. 3 años"></label>
+<label class="ancho">Ubicación del equipo<input name="ciudad"></label>
+<label>Nombre<input name="nombre" autocomplete="name" required></label><label>Empresa<input name="empresa" autocomplete="organization"></label>
+<label>Email<input name="email" type="email" autocomplete="email" required></label><label>Teléfono<input name="telefono" type="tel" autocomplete="tel"></label>
+<label class="ancho">Comentarios<textarea name="comentarios" placeholder="Accesorios, soportes, fotos disponibles…"></textarea></label>
+<div class="botones ancho"><button class="btn primario">Enviar oferta</button></div><p id="estado-venta" class="estado ancho" role="status"></p></form></div></section>
+</main>
+<footer class="pie-web">
+  <span>ADmira.shop · tienda del Xpacio AdmiraXperience</span>
+  <a href="mailto:info@admira.com">info@admira.com</a>
+  <a href="https://www.admiranext.com/">admiranext.com</a>
+  <a href="/robots.html">Robots Agibot y Unitree</a>
+  <a href="/mcp/">MCP</a>
+  <span>AdmiraNeXT v.26.09.25.r1</span>
+</footer>
+</body>
+</html>

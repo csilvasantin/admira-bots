@@ -375,7 +375,8 @@
 
   function tarjetaLibro(l) {
     var c = l.identificado ? comprasLibro(l) : null;
-    var enlace = l.modelo_pixeria ? '/pixeria/?id=' + encodeURIComponent(l.modelo_pixeria) : (c ? c.nuevo : '');
+    // URL estable del libro (los QR de las cápsulas de #4415 apuntan ahí).
+    var enlace = '/pixeria/libro/?id=' + encodeURIComponent(l.slug);
     return '<article class="tarjeta libro">' +
       '<a class="foto" href="' + esc(enlace) + '">' + (l.portada ? '<img loading="lazy" src="' + esc(l.portada) + '" alt="">' : '') + '</a>' +
       '<span class="cuerpo">' +
